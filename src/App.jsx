@@ -12,8 +12,8 @@ function Main() {
         <h3>subtitle</h3>
       </div>
       <div className="body">
-        <div className="levels">
-          <p>Choose a Level :</p>
+        <div className="difficulty">
+          <p>Choose a Difficulty :</p>
           <button id="easy">Easy</button>
           <button id="medium">Medium</button>
           <button id="hard">Hard</button>
@@ -22,4 +22,15 @@ function Main() {
     </div>
   );
 }
+
+function Levels() {
+  return (
+    <div className="levels">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+    </div>
+  );
+}
+
 export default App;
