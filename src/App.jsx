@@ -86,6 +86,10 @@ function App() {
       {difficulty && !play && (
         <Levels difficulty={difficulty} setPlay={setPlay} />
       )}
+
+      {difficulty && play && (
+        <LevelContent difficulty={difficulty} play={play} />
+      )}
     </div>
   );
 }
@@ -136,4 +140,37 @@ function Levels({ difficulty, setPlay }) {
   );
 }
 
+function LevelContent({ difficulty, play }) {
+  const [userAns, setUserAns] = useState(null);
+
+  function handleUserAnswer(userAnswer) {
+    setUserAns(userAnswer);
+  }
+  return (
+    <div className="play-content">
+      <p className="content-title">Title: {difficulty[play - 1].title} </p>
+      <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
+      <p className="content-level">Level: {difficulty[play - 1].id} </p>
+      <div className="question-section">
+        <p className="content-case">{difficulty[play - 1].case}</p>
+        <p className="content-question">
+          So..? {difficulty[play - 1].question}
+        </p>
+        <div className="options">
+          {difficulty[play - 1].options.map((optn, index) => {
+            return (
+              <button
+                key={index}
+                className="option-button"
+                onClick={() => handleUserAnswer(optn.key)}
+              >
+                {optn.key} : {optn.text}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 export default App;
