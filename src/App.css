@@ -332,11 +332,156 @@ body {
   font-weight: 600;
 }
 
-/* ── FOOTER ── */
+/* --- Explanation Text --- */
+/* --- Base Explanation Box --- */
+.explanation {
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 9px; /* Matching your option-letter radius */
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* --- Correct State (Green) --- */
+.explanation.correct-exp {
+  background: rgba(16, 185, 129, 0.08); /* Very soft green tint */
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #065f46; /* Darker green for high readability */
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.1),
+    inset 0 0 10px rgba(16, 185, 129, 0.02);
+}
+
+/* --- Wrong State (Red) --- */
+.explanation.wrong-exp {
+  background: rgba(239, 68, 68, 0.08); /* Very soft red tint */
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #991b1b; /* Darker red for high readability */
+  box-shadow:
+    0 0 20px rgba(239, 68, 68, 0.1),
+    inset 0 0 10px rgba(239, 68, 68, 0.02);
+}
+
+/* Optional: Add a small bold label at the start of the text */
+.explanation::before {
+  content: "EXPLANATION: ";
+  font-weight: 900;
+  margin-right: 8px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Base Submit Button --- */
+.submit-answer {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 1.5rem auto;
+  padding: 0.875rem 1.5rem;
+  font-size: 14px;
+  font-weight: 900; /* Matches your heavy option-letter weight */
+  letter-spacing: 3.5px;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    #7c3aed,
+    #a855f7
+  ); /* Matches your selected state gradient */
+  border: 1px solid #a855f7;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25); /* Subtle purple glow */
+}
+
+.submit-answer:hover {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); /* Stronger glow on hover */
+  transform: translateY(-2px);
+}
+
+.submit-answer:active {
+  transform: translateY(0);
+}
+
+/* --- Correct Answer State --- */
+/* Uses universal green for correct, but applies your glowing/gradient aesthetic */
+.submit-answer.correct-answer {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  border-color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); /* Green glow */
+  pointer-events: none;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- Wrong Answer State --- */
+/* Uses universal red for wrong, but applies your glowing/gradient aesthetic */
+.submit-answer.wrong-answer {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  border-color: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); /* Red glow */
+  pointer-events: none;
+  animation: shake 0.4s ease-in-out;
+}
+
+/* --- Footer Text --- */
 .footer-text {
   text-align: center;
-  margin-top: 24px;
-  font-size: 10px;
-  color: #fc07df;
-  letter-spacing: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(124, 58, 237, 0.6); /* Muted version of your primary purple */
+  letter-spacing: 7px;
+  margin-top: 2rem;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
 }
