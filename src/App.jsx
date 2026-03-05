@@ -8,11 +8,10 @@ const easyLevels = [
     difficulty: "EASY",
     title: "THE NEIGHBOR",
     subTitle: "A letter was slipped under your door by mistake",
-    case: `My dearest Margaret,
-    I hope this letter finds you well. Life here has been peaceful, though I must admit the nights feel longer than I remember. I think of the house often — the garden, the kitchen, the way the light comes through the east window in the morning. I miss it deeply.
-    Please do not worry about me. I am eating well and the people here are kind. James visits every Sunday without fail, which means the world to me. Tell him I said so, if you see him before I do.
-    With all my love,
-    Father`,
+    case: `My dearest Margaret,\n
+    I hope this letter finds you well. Life here has been peaceful, though I must admit the nights feel longer than I remember. I think of the house often — the garden, the kitchen, the way the light comes through the east window in the morning. I miss it deeply.\n
+    Please do not worry about me. I am eating well and the people here are kind. James visits every Sunday without fail, which means the world to me. Tell him I said so, if you see him before I do.\n
+    With all my love,\n Father`,
     question:
       "Something in this letter suggests the father did not write it willingly. What is it?",
 
@@ -166,8 +165,11 @@ function LevelContent({ difficulty, play }) {
     <div className="play-content">
       <div className="header-container">
         <p id="emoji">📬</p>
-        <p id="role">YOUR ROLE</p>
-        <p className="content-title"> {difficulty[play - 1].title} </p>
+        <div className="role-infp">
+          <p id="role">YOUR ROLE</p>
+          <p className="content-title"> {difficulty[play - 1].title} </p>
+        </div>
+
         <div className="stats">
           <p className="content-level">Level: {difficulty[play - 1].id} </p>
           <p className="content-difficulty">
@@ -179,15 +181,17 @@ function LevelContent({ difficulty, play }) {
       <div className="timer">
         <p>TIME REMAINING</p>
         <div className="timer-countdown">{difficulty[play - 1].timeLimit}</div>
-        <div
-          className="countdown-bar"
-          style={{
-            width: `${percentage}%`,
-            height: "20px",
-            transition: "width 1s linear",
-            backgroundColor: "#B87D5A",
-          }}
-        ></div>
+        <div className="countdown-bar-wrapper">
+          <div
+            className="countdown-bar"
+            style={{
+              width: `${percentage}%`,
+              height: "20px",
+              transition: "width 1s linear",
+              backgroundColor: "#B87D5A",
+            }}
+          ></div>
+        </div>
       </div>
 
       <div className="case-conainer">
@@ -208,7 +212,7 @@ function LevelContent({ difficulty, play }) {
           return (
             <div
               key={index}
-              className="option-button"
+              className={`option-button ${userAns === optn.key ? "selected" : ""}`}
               onClick={() => handleUserAnswer(optn.key)}
             >
               <div className="option-letter">{optn.key} </div>
