@@ -313,7 +313,6 @@ function Main({ setDifficulty }) {
 
 function Levels({ difficulty, setPlay }) {
   function handleShowContent(id) {
-    console.log(id);
     setPlay(id);
   }
   return (
@@ -335,6 +334,8 @@ function LevelContent({ difficulty, play }) {
   const [timer, setTimer] = useState(totalTime);
   const percentage = (timer / totalTime) * 100;
 
+  const [submitted, setSubmitted] = useState(false);
+
   useEffect(() => {
     if (timer === 0) return;
 
@@ -348,6 +349,7 @@ function LevelContent({ difficulty, play }) {
   function handleUserAnswer(userAnswer) {
     setUserAns(userAnswer);
   }
+
   return (
     <div className="play-content">
       <div className="header-container">
@@ -364,7 +366,6 @@ function LevelContent({ difficulty, play }) {
           </p>
         </div>
       </div>
-
       <div className="timer">
         <p>TIME REMAINING</p>
         <div className="timer-countdown">{timer}</div>
@@ -380,7 +381,6 @@ function LevelContent({ difficulty, play }) {
           ></div>
         </div>
       </div>
-
       <div className="case-conainer">
         <div className="case-container-header">
           <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
@@ -388,27 +388,50 @@ function LevelContent({ difficulty, play }) {
         </div>
         <div className="case-content">{difficulty[play - 1].case}</div>
       </div>
-
       <div className="question-section">
         <p>QUESTION... So ?</p>
         <p className="content-question">{difficulty[play - 1].question}</p>
       </div>
-
       <div className="answer-options">
         {difficulty[play - 1].options.map((optn, index) => {
           return (
-            <div
+            <button
               key={index}
               className={`option-button ${userAns === optn.key ? "selected" : ""}`}
               onClick={() => handleUserAnswer(optn.key)}
+              disabled={submitted}
             >
               <div className="option-letter">{optn.key} </div>
               <div className="option-text">{optn.text}</div>
-            </div>
+            </button>
           );
         })}
       </div>
-      <p className="footer-text">-- SELECT YOUR ANSWER --</p>
+
+      {submitted && (
+        <p
+          className={`explanation ${userAns === difficulty[play - 1].solution ? "correct-exp" : "wrong-exp"}`}
+        >
+          {difficulty[play - 1].explanation}
+        </p>
+      )}
+
+      {userAns && (
+        <button
+          className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
+          onClick={() => setSubmitted(true)}
+        >
+          {!submitted
+            ? "SUBMIT"
+            : userAns === difficulty[play - 1].solution
+              ? "CORRECT!"
+              : "WRONG!"}
+        </button>
+      )}
+
+      <p className="footer-text">
+        {!submitted ? "-- SELECT YOUR ANSWER --" : "-- STAY SHARP --"}
+      </p>
     </div>
   );
 }
