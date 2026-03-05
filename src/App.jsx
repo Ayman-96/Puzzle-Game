@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 const easyLevels = [
   {
     id: 1,
+    number: "001",
+    difficulty: "EASY",
     title: "THE NEIGHBOR",
-    subTitle: "📬 A letter was slipped under your door by mistake",
+    subTitle: "A letter was slipped under your door by mistake",
+    case: `My dearest Margaret,
+    I hope this letter finds you well. Life here has been peaceful, though I must admit the nights feel longer than I remember. I think of the house often — the garden, the kitchen, the way the light comes through the east window in the morning. I miss it deeply.
+    Please do not worry about me. I am eating well and the people here are kind. James visits every Sunday without fail, which means the world to me. Tell him I said so, if you see him before I do.
+    With all my love,
+    Father`,
     question:
       "Something in this letter suggests the father did not write it willingly. What is it?",
-    case: `"My dearest Margaret,
-      I hope this letter finds you well. Life here has been peaceful, though I must admit the nights feel longer than I remember. I think of the house often — the garden, the kitchen, the way the light comes through the east window in the morning. I miss it deeply.
-      Please do not worry about me. I am eating well and the people here are kind. James visits every Sunday without fail, which means the world to me. Tell him I said so, if you see him before I do.
-      With all my love,
-      Father"`,
+
     img: "",
     options: [
       {
@@ -36,7 +39,7 @@ const easyLevels = [
     explanation:
       "He asks Margaret to tell James he visits every Sunday — but if James truly visits him, he would tell James himself. He wouldn't need Margaret as a messenger. James does not actually visit.",
     category: "contradiction",
-    timeLimit: 15,
+    timeLimit: 60,
   },
   {
     id: 2,
@@ -142,34 +145,79 @@ function Levels({ difficulty, setPlay }) {
 
 function LevelContent({ difficulty, play }) {
   const [userAns, setUserAns] = useState(null);
+  const totalTime = difficulty[play - 1].timeLimit;
+  const [timer, setTimer] = useState(totalTime);
+  const percentage = (timer / totalTime) * 100;
+
+  useEffect(() => {
+    if (timer === 0) return;
+
+    const countDown = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(countDown);
+  }, [timer]);
 
   function handleUserAnswer(userAnswer) {
     setUserAns(userAnswer);
   }
   return (
     <div className="play-content">
-      <p className="content-title">Title: {difficulty[play - 1].title} </p>
-      <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
-      <p className="content-level">Level: {difficulty[play - 1].id} </p>
-      <div className="question-section">
-        <p className="content-case">{difficulty[play - 1].case}</p>
-        <p className="content-question">
-          So..? {difficulty[play - 1].question}
-        </p>
-        <div className="options">
-          {difficulty[play - 1].options.map((optn, index) => {
-            return (
-              <button
-                key={index}
-                className="option-button"
-                onClick={() => handleUserAnswer(optn.key)}
-              >
-                {optn.key} : {optn.text}
-              </button>
-            );
-          })}
+      <div className="header-container">
+        <p id="emoji">📬</p>
+        <p id="role">YOUR ROLE</p>
+        <p className="content-title"> {difficulty[play - 1].title} </p>
+        <div className="stats">
+          <p className="content-level">Level: {difficulty[play - 1].id} </p>
+          <p className="content-difficulty">
+            {difficulty[play - 1].difficulty}
+          </p>
         </div>
       </div>
+
+      <div className="timer">
+        <p>TIME REMAINING</p>
+        <div className="timer-countdown">{difficulty[play - 1].timeLimit}</div>
+        <div
+          className="countdown-bar"
+          style={{
+            width: `${percentage}%`,
+            height: "20px",
+            transition: "width 1s linear",
+            backgroundColor: "#B87D5A",
+          }}
+        ></div>
+      </div>
+
+      <div className="case-conainer">
+        <div className="case-container-header">
+          <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
+          <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
+        </div>
+        <div className="case-content">{difficulty[play - 1].case}</div>
+      </div>
+
+      <div className="question-section">
+        <p>QUESTION... So ?</p>
+        <p className="content-question">{difficulty[play - 1].question}</p>
+      </div>
+
+      <div className="answer-options">
+        {difficulty[play - 1].options.map((optn, index) => {
+          return (
+            <div
+              key={index}
+              className="option-button"
+              onClick={() => handleUserAnswer(optn.key)}
+            >
+              <div className="option-letter">{optn.key} </div>
+              <div className="option-text">{optn.text}</div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="footer-text">-- SELECT YOUR ANSWER --</p>
     </div>
   );
 }
