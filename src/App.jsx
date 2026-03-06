@@ -66,6 +66,7 @@ function Levels({ difficulty, setPlay }) {
 
 function LevelContent({ difficulty, play }) {
   const [userAns, setUserAns] = useState(null);
+
   const totalTime = difficulty[play - 1].timeLimit;
   const [timer, setTimer] = useState(totalTime);
   const percentage = (timer / totalTime) * 100;
@@ -82,12 +83,47 @@ function LevelContent({ difficulty, play }) {
     return () => clearInterval(countDown);
   }, [timer]);
 
-  function handleUserAnswer(userAnswer) {
-    setUserAns(userAnswer);
-  }
-
   return (
     <div className="play-content">
+      <LevelInfo
+        difficulty={difficulty}
+        play={play}
+        timer={timer}
+        percentage={percentage}
+      />
+
+      <CaseContent difficulty={difficulty} play={play} />
+
+      <QuestionSection difficulty={difficulty} play={play} />
+
+      <AnswerSection
+        difficulty={difficulty}
+        play={play}
+        userAns={userAns}
+        setUserAns={setUserAns}
+        submitted={submitted}
+      />
+
+      {userAns && (
+        <Submittion
+          submitted={submitted}
+          userAns={userAns}
+          difficulty={difficulty}
+          play={play}
+          setSubmitted={setSubmitted}
+        />
+      )}
+
+      <p className="footer-text">
+        {!submitted ? "-- SELECT YOUR ANSWER --" : "-- STAY SHARP --"}
+      </p>
+    </div>
+  );
+}
+// LevelContent COMPONENTS
+function LevelInfo({ difficulty, play, timer, percentage }) {
+  return (
+    <div className="level-info">
       <div className="header-container">
         <p id="emoji">{difficulty[play - 1].emoji}</p>
         <div className="role-infp">
@@ -117,32 +153,47 @@ function LevelContent({ difficulty, play }) {
           ></div>
         </div>
       </div>
-      <div className="case-conainer">
-        <div className="case-container-header">
-          <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
-          <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
-        </div>
-        <div className="case-content">{difficulty[play - 1].case}</div>
+    </div>
+  );
+}
+function CaseContent({ difficulty, play }) {
+  return (
+    <div className="case-conainer">
+      <div className="case-container-header">
+        <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
+        <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
       </div>
-      <div className="question-section">
-        <p>QUESTION... So ?</p>
-        <p className="content-question">{difficulty[play - 1].question}</p>
-      </div>
-      <div className="answer-options">
-        {difficulty[play - 1].options.map((optn, index) => {
-          return (
-            <button
-              key={index}
-              className={`option-button ${userAns === optn.key ? "selected" : ""}`}
-              onClick={() => handleUserAnswer(optn.key)}
-              disabled={submitted}
-            >
-              <div className="option-letter">{optn.key} </div>
-              <div className="option-text">{optn.text}</div>
-            </button>
-          );
-        })}
-      </div>
+      <div className="case-content">{difficulty[play - 1].case}</div>
+    </div>
+  );
+}
+function QuestionSection({ difficulty, play }) {
+  return (
+    <div className="question-section">
+      <p>QUESTION... So ?</p>
+      <p className="content-question">{difficulty[play - 1].question}</p>
+    </div>
+  );
+}
+function AnswerSection({ difficulty, play, userAns, setUserAns, submitted }) {
+  function handleUserAnswer(userAnswer) {
+    setUserAns(userAnswer);
+  }
+  return (
+    <div className="answer-options">
+      {difficulty[play - 1].options.map((optn, index) => {
+        return (
+          <button
+            key={index}
+            className={`option-button ${userAns === optn.key ? "selected" : ""}`}
+            onClick={() => handleUserAnswer(optn.key)}
+            disabled={submitted}
+          >
+            <div className="option-letter">{optn.key} </div>
+            <div className="option-text">{optn.text}</div>
+          </button>
+        );
+      })}
 
       {submitted && (
         <p
@@ -151,24 +202,21 @@ function LevelContent({ difficulty, play }) {
           {difficulty[play - 1].explanation}
         </p>
       )}
-
-      {userAns && (
-        <button
-          className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
-          onClick={() => setSubmitted(true)}
-        >
-          {!submitted
-            ? "SUBMIT"
-            : userAns === difficulty[play - 1].solution
-              ? "CORRECT!"
-              : "WRONG!"}
-        </button>
-      )}
-
-      <p className="footer-text">
-        {!submitted ? "-- SELECT YOUR ANSWER --" : "-- STAY SHARP --"}
-      </p>
     </div>
+  );
+}
+function Submittion({ submitted, userAns, difficulty, play, setSubmitted }) {
+  return (
+    <button
+      className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
+      onClick={() => setSubmitted(true)}
+    >
+      {!submitted
+        ? "SUBMIT"
+        : userAns === difficulty[play - 1].solution
+          ? "CORRECT!"
+          : "WRONG!"}
+    </button>
   );
 }
 export default App;

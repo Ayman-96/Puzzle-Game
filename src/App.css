@@ -212,7 +212,7 @@ body {
 }
 
 #file {
-  font-size: 10px;
+  font-size: 11px;
   color: #c68800;
   letter-spacing: 5px;
   margin: 0 0 6px;
@@ -228,6 +228,7 @@ body {
 .case-content {
   padding: 28px 32px;
   color: #ffff;
+  background-color: #150e25; /*DELETE THIS FOR BACKGROUND*/
   font-size: 19px;
   letter-spacing: 1.8px;
   line-height: 2.1;
