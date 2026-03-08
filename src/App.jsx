@@ -166,6 +166,19 @@ function CaseContent({ difficulty, play }) {
   const [colorName, setColorName] = useState("");
   const [boldText, setBoldText] = useState("normal");
 
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.ctrlKey && e.key === "z") {
+        setHighlight((prev) => prev.slice(0, -1));
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   function handleHighlightColor(backgroundColor, textColor, colorName) {
     if (bgColor === backgroundColor && color === textColor) {
       setBgColor("");
@@ -188,7 +201,7 @@ function CaseContent({ difficulty, play }) {
       setHighlight((prev) => [...prev, selected]);
   };
   return (
-    <div className="case-container" onMouseUp={handleHighlight}>
+    <div className="case-container">
       <div className="case-container-header">
         <div className="case-file-highlight">
           <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
@@ -212,7 +225,7 @@ function CaseContent({ difficulty, play }) {
         </div>
       </div>
 
-      <div className="case-content">
+      <div className="case-content" onMouseUp={handleHighlight}>
         <Highlighter
           searchWords={highlights}
           autoEscape={true}
@@ -233,7 +246,7 @@ function HighlightOtions({ handleHighlightColor, bgColor }) {
   const colors = [
     { clr: "#eff755", txt: "black", clrNme: "Yellow" },
     { clr: "pink", txt: "black", clrNme: "Pink" },
-    { clr: "#8ef173", txt: "black", clrNme: "Green" },
+    { clr: "#6fdb51", txt: "black", clrNme: "Green" },
     { clr: "#82ccee", txt: "black", clrNme: "Blue" },
     { clr: "white", txt: "black", clrNme: "White" },
   ];
@@ -244,6 +257,7 @@ function HighlightOtions({ handleHighlightColor, bgColor }) {
           return (
             <button
               className={`${color.clrNme.toLowerCase()}-highlighter ${bgColor === color.clr && "selected-color"}`}
+              key={color.clrNme}
               onClick={() =>
                 handleHighlightColor(color.clr, color.txt, color.clrNme)
               }

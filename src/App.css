@@ -211,7 +211,7 @@ body {
   padding: 12px 28px;
   background: rgba(139, 92, 246, 0.07);
   border-bottom: 1px solid rgba(139, 92, 246, 0.12);
-  box-shadow: 0 4px 8px -2px rgba(205, 6, 255, 0.4);
+  box-shadow: 0 4px 8px -2px rgba(164, 6, 255, 0.4);
 }
 
 #file {
