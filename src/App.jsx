@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { easyLevels, mediumLevels, hardLevels } from "./data";
+import Highlighter from "react-highlight-words";
 
 function App() {
   const [difficulty, setDifficulty] = useState("");
@@ -23,6 +24,7 @@ function Main({ setDifficulty }) {
   function handleSetDifficulty(level) {
     setDifficulty(level);
   }
+
   return (
     <div className="container">
       <div className="header">
@@ -156,14 +158,100 @@ function LevelInfo({ difficulty, play, timer, percentage }) {
     </div>
   );
 }
+
 function CaseContent({ difficulty, play }) {
+  const [highlights, setHighlight] = useState([]);
+  const [bgColor, setBgColor] = useState();
+  const [color, setColor] = useState();
+  const [colorName, setColorName] = useState("");
+  const [boldText, setBoldText] = useState("normal");
+
+  function handleHighlightColor(backgroundColor, textColor, colorName) {
+    if (bgColor === backgroundColor && color === textColor) {
+      setBgColor("");
+      setColor("");
+      setColorName("");
+    } else {
+      setBgColor(backgroundColor);
+      setColor(textColor);
+      setColorName(colorName);
+    }
+  }
+
+  function fontWeight() {
+    boldText === "normal" ? setBoldText("bold") : setBoldText("normal");
+  }
+
+  const handleHighlight = () => {
+    let selected = window.getSelection().toString().trim();
+    if (selected && (bgColor || boldText === "bold"))
+      setHighlight((prev) => [...prev, selected]);
+  };
   return (
-    <div className="case-conainer">
+    <div className="case-container" onMouseUp={handleHighlight}>
       <div className="case-container-header">
-        <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
-        <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
+        <div className="case-file-highlight">
+          <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
+          <HighlightOtions
+            handleHighlightColor={handleHighlightColor}
+            bgColor={bgColor}
+          />
+          <button
+            className={`bold-highlighter ${boldText === "bold" && "selected-bold"}`}
+            onClick={fontWeight}
+            title="White"
+          >
+            B
+          </button>
+        </div>
+        <div className="case-subtitle">
+          <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
+          <p className="highlight-name">
+            {colorName ? colorName : "No Highlighter"}
+          </p>
+        </div>
       </div>
-      <div className="case-content">{difficulty[play - 1].case}</div>
+
+      <div className="case-content">
+        <Highlighter
+          searchWords={highlights}
+          autoEscape={true}
+          textToHighlight={difficulty[play - 1].case}
+          highlightStyle={{
+            background: bgColor ? bgColor : "none",
+            color: color ? color : "white",
+            fontWeight: boldText === "bold" ? "bold" : "normal",
+            borderRadius: 3,
+            padding: "4px 0px",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+function HighlightOtions({ handleHighlightColor, bgColor }) {
+  const colors = [
+    { clr: "#eff755", txt: "black", clrNme: "Yellow" },
+    { clr: "pink", txt: "black", clrNme: "Pink" },
+    { clr: "#8ef173", txt: "black", clrNme: "Green" },
+    { clr: "#82ccee", txt: "black", clrNme: "Blue" },
+    { clr: "white", txt: "black", clrNme: "White" },
+  ];
+  return (
+    <div className="highlight-options">
+      <div className={"highlight-colors"}>
+        {colors.map((color) => {
+          return (
+            <button
+              className={`${color.clrNme.toLowerCase()}-highlighter ${bgColor === color.clr && "selected-color"}`}
+              onClick={() =>
+                handleHighlightColor(color.clr, color.txt, color.clrNme)
+              }
+              title={color.clrNme}
+            ></button>
+          );
+        })}
+      </div>
     </div>
   );
 }

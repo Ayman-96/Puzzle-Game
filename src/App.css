@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,6 +8,7 @@
 .header > h2,
 h3 {
   color: #d8b4fe;
+  font-weight: normal;
 }
 .difficulty > p {
   color: white;
@@ -206,23 +208,24 @@ body {
 }
 
 .case-container-header {
-  padding: 16px 28px;
+  padding: 12px 28px;
   background: rgba(139, 92, 246, 0.07);
   border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 4px 8px -2px rgba(205, 6, 255, 0.4);
 }
 
 #file {
   font-size: 11px;
   color: #c68800;
   letter-spacing: 5px;
-  margin: 0 0 6px;
+  margin: 0;
 }
 
 .content-subtitle {
   font-size: 19px;
   color: #7c3aed;
   font-style: italic;
-  margin: 0;
+  margin-bottom: 10px;
 }
 
 .case-content {
@@ -232,9 +235,17 @@ body {
   font-size: 19px;
   letter-spacing: 1.8px;
   line-height: 2.1;
-  font-family: "Georgia", serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   font-style: italic;
   white-space: pre-line;
+  border-radius: 12px;
+  border-bottom-left-radius: 0px;
 }
 
 /* ── QUESTION ── */
@@ -245,6 +256,7 @@ body {
   border-radius: 12px;
   border-left: 3px solid #a855f7;
   margin-bottom: 20px;
+  margin-top: 15px;
 }
 
 .question-section > p:first-child {
@@ -256,6 +268,7 @@ body {
 
 .content-question {
   font-size: 16px;
+  color: #e2e8f0; /* Soften the white slightly to reduce glare */
   color: #e9d5ff;
   margin: 0;
   line-height: 1.7;
@@ -319,6 +332,7 @@ body {
 
 .option-text {
   font-size: 16px;
+  font-family: "Open Sans", sans-serif !important;
   color: #7c3aed;
   line-height: 1.6;
   transition: color 0.15s;
@@ -458,7 +472,153 @@ body {
     transform: translateY(0);
   }
 }
+/* 1. The Main Header - Now stacks the two rows vertically */
+.case-container-header {
+  display: flex;
+  flex-direction: column; /* Stacks row 1 and row 2 */
+  gap: 15px; /* Spacing between the top row and bottom row */
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border-bottom-left-radius: 0px;
+}
 
+/* 2. Row 1: Case File (Left) + Colors & B Button (Right) */
+.case-file-highlight {
+  display: flex;
+  align-items: center;
+}
+
+/* The Magic Trick: Pushes everything after the Case File text to the far right */
+.case-file-highlight #file {
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+/* 3. Row 2: Subtitle (Left) + Highlight Name (Right) */
+.case-subtitle {
+  display: flex;
+  justify-content: space-between; /* Pushes the two text elements apart */
+  align-items: center;
+}
+
+.case-subtitle p {
+  margin: 0; /* Keeps the text aligned properly */
+}
+
+/* 4. Keeps your color buttons as circles instead of lines */
+.highlight-colors {
+  display: flex;
+  gap: 12px;
+}
+
+.highlight-colors button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 5. Highlight Name Text Styling */
+.highlight-name {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+/* Map your background colors back */
+.yellow-highlighter {
+  background-color: #d4a017;
+}
+.pink-highlighter {
+  background-color: #d4619a;
+}
+.green-highlighter {
+  background-color: #24a15b;
+}
+.blue-highlighter {
+  background-color: #38bdf8;
+}
+.white-highlighter {
+  background-color: #d1d5db;
+}
+.selected-color {
+  width: 24px !important;
+  height: 24px !important;
+  border: 2px solid rgba(255, 255, 255, 0.9) !important;
+}
+.bold-highlighter.selected-bold {
+  box-shadow:
+    0 0 14px rgb(144, 9, 185),
+    0 0 28px rgba(209, 15, 227, 0.4);
+}
+.yellow-highlighter.selected-color {
+  box-shadow:
+    0 0 14px yellow,
+    0 0 28px rgba(255, 255, 0, 0.3);
+}
+.pink-highlighter.selected-color {
+  box-shadow:
+    0 0 14px pink,
+    0 0 28px rgba(255, 192, 203, 0.3);
+}
+.green-highlighter.selected-color {
+  box-shadow:
+    0 0 14px green,
+    0 0 28px rgba(0, 128, 0, 0.3);
+}
+.blue-highlighter.selected-color {
+  box-shadow:
+    0 0 14px blue,
+    0 0 28px rgba(0, 0, 255, 0.3);
+}
+.white-highlighter.selected-color {
+  box-shadow:
+    0 0 14px white,
+    0 0 28px rgba(255, 255, 255, 0.3);
+}
+/* The Bold Button */
+.bold-highlighter {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid #8b5cf6;
+  color: #c084fc;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.highlight-colors button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent; /* Prevents layout shifting */
+  cursor: pointer;
+  transition:
+    transform 0.2s ease-in-out,
+    border-color 0.2s; /* Smooth zoom effect */
+}
+
+/* When the color is selected */
+.active-color {
+  transform: scale(1.4); /* Makes it 40% bigger */
+  border-color: white !important; /* Adds a ring to make it stand out */
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  z-index: 10; /* Ensures it stays on top of others */
+}
+
+/* Optional: Slight grow on hover even if not selected */
+.highlight-colors button:hover:not(.active-color) {
+  transform: scale(1.15);
+}
 @keyframes popIn {
   0% {
     transform: scale(1);
