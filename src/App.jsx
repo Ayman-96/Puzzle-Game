@@ -103,12 +103,11 @@ function LevelContent({ difficulty, play, setTimer, timer }) {
   const percentage = (timer / totalTime) * 100;
 
   useEffect(() => {
-    if (timer === 0) return;
+    if (timer <= 0) return;
 
     const countDown = setInterval(() => {
       setTimer((prev) => prev - 1);
     }, 1000);
-
     return () => clearInterval(countDown);
   }, [timer, setTimer]); //setTimer is stable, meaning they never change. So adding it won't cause extra renders. ESLint just wants it there for safety.
 
@@ -121,19 +120,16 @@ function LevelContent({ difficulty, play, setTimer, timer }) {
         percentage={percentage}
       />
 
-      {timer > 0 && (
-        <>
-          <CaseContent difficulty={difficulty} play={play} />
-          <QuestionSection difficulty={difficulty} play={play} />
-          <AnswerSection
-            difficulty={difficulty}
-            play={play}
-            userAns={userAns}
-            setUserAns={setUserAns}
-            submitted={submitted}
-          />
-        </>
-      )}
+      <CaseContent difficulty={difficulty} play={play} />
+
+      <QuestionSection difficulty={difficulty} play={play} />
+      <AnswerSection
+        difficulty={difficulty}
+        play={play}
+        userAns={userAns}
+        setUserAns={setUserAns}
+        submitted={submitted}
+      />
 
       {timer > 0 && userAns && (
         <Submittion
@@ -142,6 +138,7 @@ function LevelContent({ difficulty, play, setTimer, timer }) {
           difficulty={difficulty}
           play={play}
           setSubmitted={setSubmitted}
+          setTimer={setTimer}
         />
       )}
 
@@ -378,11 +375,22 @@ function AnswerSection({ difficulty, play, userAns, setUserAns, submitted }) {
     </div>
   );
 }
-function Submittion({ submitted, userAns, difficulty, play, setSubmitted }) {
+function Submittion({
+  submitted,
+  userAns,
+  difficulty,
+  play,
+  setSubmitted,
+  setTimer,
+}) {
+  function handleSubmittion() {
+    setSubmitted(true);
+    setTimer(null);
+  }
   return (
     <button
       className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
-      onClick={() => setSubmitted(true)}
+      onClick={handleSubmittion}
     >
       {!submitted
         ? "SUBMIT"
