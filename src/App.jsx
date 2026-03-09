@@ -54,6 +54,9 @@ function Main({ setDifficulty }) {
   return (
     <div className="container">
       <div className="header">
+        <button className="profiletton-button" title="Profile">
+          <img src="/avatars/main-avatar.jpg" alt="Profile" />
+        </button>
         <h2 className="title">Solve Problems</h2>
         <h3>subtitle</h3>
       </div>

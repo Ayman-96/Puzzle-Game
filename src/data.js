@@ -42,7 +42,7 @@ export const easyLevels = [
     id: 2,
     title: "THE NEW EMPLOYEE",
     subTitle: "Your first week at the company — something feels off",
-    emoji: "🧑‍💼",
+    emoji: "💼",
     question:
       "Based on the email chain, who is lying about the missed deadline?",
     case: `From: Daniel (Manager) → To: All Team
