@@ -4,8 +4,17 @@ import { easyLevels, mediumLevels, hardLevels } from "./data";
 import Highlighter from "react-highlight-words";
 
 function App() {
-  const [difficulty, setDifficulty] = useState("");
+  const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
+
+  const [timer, setTimer] = useState(null); // For inGaame Timer
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (play && difficulty) {
+      setTimer(difficulty[play - 1].timeLimit);
+    }
+  }, [play, difficulty]);
   return (
     <div>
       {!play && <Main setDifficulty={setDifficulty} />}
@@ -14,7 +23,24 @@ function App() {
       )}
 
       {difficulty && play && (
-        <LevelContent difficulty={difficulty} play={play} />
+        <LevelContent
+          difficulty={difficulty}
+          play={play}
+          setTimer={setTimer}
+          timer={timer}
+        />
+      )}
+
+      {timer <= 0 && timer !== null && (
+        <div className="time-up-overlay">
+          <TimeUp
+            setPlay={setPlay}
+            setDifficulty={setDifficulty}
+            setTimer={setTimer}
+            difficulty={difficulty}
+            play={play}
+          />
+        </div>
       )}
     </div>
   );
@@ -66,14 +92,12 @@ function Levels({ difficulty, setPlay }) {
   );
 }
 
-function LevelContent({ difficulty, play }) {
+function LevelContent({ difficulty, play, setTimer, timer }) {
   const [userAns, setUserAns] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const totalTime = difficulty[play - 1].timeLimit;
-  const [timer, setTimer] = useState(totalTime);
   const percentage = (timer / totalTime) * 100;
-
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (timer === 0) return;
@@ -83,7 +107,7 @@ function LevelContent({ difficulty, play }) {
     }, 1000);
 
     return () => clearInterval(countDown);
-  }, [timer]);
+  }, [timer, setTimer]); //setTimer is stable, meaning they never change. So adding it won't cause extra renders. ESLint just wants it there for safety.
 
   return (
     <div className="play-content">
@@ -94,19 +118,21 @@ function LevelContent({ difficulty, play }) {
         percentage={percentage}
       />
 
-      <CaseContent difficulty={difficulty} play={play} />
+      {timer > 0 && (
+        <>
+          <CaseContent difficulty={difficulty} play={play} />
+          <QuestionSection difficulty={difficulty} play={play} />
+          <AnswerSection
+            difficulty={difficulty}
+            play={play}
+            userAns={userAns}
+            setUserAns={setUserAns}
+            submitted={submitted}
+          />
+        </>
+      )}
 
-      <QuestionSection difficulty={difficulty} play={play} />
-
-      <AnswerSection
-        difficulty={difficulty}
-        play={play}
-        userAns={userAns}
-        setUserAns={setUserAns}
-        submitted={submitted}
-      />
-
-      {userAns && (
+      {timer > 0 && userAns && (
         <Submittion
           submitted={submitted}
           userAns={userAns}
@@ -238,6 +264,48 @@ function CaseContent({ difficulty, play }) {
             padding: "4px 0px",
           }}
         />
+      </div>
+    </div>
+  );
+}
+function TimeUp({ setPlay, setDifficulty, setTimer, difficulty, play }) {
+  function handleToMainMenu() {
+    setPlay(null);
+    setDifficulty(null);
+    setTimer(null);
+  }
+  function handleTryAgain() {
+    setTimer(difficulty[play - 1].timeLimit);
+  }
+  return (
+    <div className="time-up-container">
+      <div className="time-up-warning">
+        <div className="timer-emoji">⏱</div>
+        <p>— TIME'S UP! —</p>
+        <h2>Case Unsolved..!</h2>
+        <p>
+          You ran out of time before finding the truth. The case remains open
+        </p>
+        <div className="separation">————————————————</div>
+      </div>
+      <div className="time-up-details">
+        <div className="first-cell-details">
+          <p>#Tries</p>
+        </div>
+        <div className="second-cell-details"></div>
+        <p>Time Rank</p>
+        <div className="third-cell-details">
+          <p>Streak</p>
+        </div>
+      </div>
+      <div className="next-step-buttons">
+        <button className="try-again" onClick={handleTryAgain}>
+          {" "}
+          ▶ TRY AGAIN
+        </button>
+        <button className="go-menu" onClick={handleToMainMenu}>
+          ◀ MENU
+        </button>
       </div>
     </div>
   );
