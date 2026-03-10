@@ -336,7 +336,13 @@ body {
     0 0 30px rgba(168, 85, 247, 0.12),
     inset 0 0 30px rgba(168, 85, 247, 0.04);
 }
-
+.option-button.missed {
+  background: rgba(197, 35, 49, 0.12);
+  border-color: rgba(250, 13, 21, 0.5);
+  box-shadow:
+    0 0 30px rgba(197, 35, 49, 0.12),
+    inset 0 0 30px rgba(250, 13, 21, 0.5);
+}
 .option-letter {
   width: 34px;
   height: 34px;

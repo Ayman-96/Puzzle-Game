@@ -8,8 +8,26 @@ function App() {
   const [play, setPlay] = useState(null);
 
   const [timer, setTimer] = useState(null); // For inGaame Timer
+  const [mistakes, setMistakes] = useState(0);
 
-  const [wrongAnswerings, setWrongAnswerings] = useState(0);
+  const currentCase = difficulty && play ? difficulty[play - 1] : null;
+  const caseDetails = difficulty &&
+    play && {
+      id: currentCase.id,
+      number: currentCase.number,
+      difficulty: currentCase.difficulty,
+      title: currentCase.title,
+      subTitle: currentCase.subTitle,
+      emoji: currentCase.emoji,
+      case: currentCase.case,
+      question: currentCase.question,
+      img: currentCase.img,
+      options: currentCase.options,
+      solution: currentCase.solution,
+      explanation: currentCase.explanation,
+      category: currentCase.category,
+      timeLimit: currentCase.timeLimit,
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (play && difficulty) {
@@ -25,11 +43,10 @@ function App() {
 
       {difficulty && play && (
         <LevelContent
-          difficulty={difficulty}
-          play={play}
+          caseDetails={caseDetails}
           setTimer={setTimer}
           timer={timer}
-          setWrongAnswerings={setWrongAnswerings} //Drop-Drill
+          setMistakes={setMistakes} //Drop-Drill
           setPlay={setPlay} //Drop-Drill
           setDifficulty={setDifficulty} // drop-drill
         />
@@ -88,18 +105,17 @@ function Levels({ difficulty, setPlay }) {
 }
 
 function LevelContent({
-  difficulty,
-  play,
+  caseDetails,
   setTimer,
   timer,
-  setWrongAnswerings,
+  setMistakes,
   setPlay,
   setDifficulty,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const totalTime = difficulty[play - 1].timeLimit;
+  const totalTime = caseDetails.timeLimit;
   const percentage = (timer / totalTime) * 100;
 
   useEffect(() => {
@@ -115,18 +131,16 @@ function LevelContent({
   return (
     <div className="play-content">
       <LevelInfo
-        difficulty={difficulty}
-        play={play}
+        caseDetails={caseDetails}
         timer={timer}
         percentage={percentage}
       />
 
-      <CaseContent difficulty={difficulty} play={play} />
+      <CaseContent caseDetails={caseDetails} />
 
-      <QuestionSection difficulty={difficulty} play={play} />
+      <QuestionSection caseDetails={caseDetails} />
       <AnswerSection
-        difficulty={difficulty}
-        play={play}
+        caseDetails={caseDetails}
         userAns={userAns}
         setUserAns={setUserAns}
         submitted={submitted}
@@ -136,18 +150,16 @@ function LevelContent({
         <Submittion
           submitted={submitted}
           userAns={userAns}
-          difficulty={difficulty}
-          play={play}
+          caseDetails={caseDetails}
           setSubmitted={setSubmitted}
           setTimer={setTimer}
-          setWrongAnswerings={setWrongAnswerings}
+          setMistakes={setMistakes}
         />
       )}
 
-      {submitted && userAns === difficulty[play - 1].solution && (
+      {submitted && userAns === caseDetails.solution && (
         <CorrectAnswering
-          difficulty={difficulty}
-          play={play}
+          caseDetails={caseDetails}
           setPlay={setPlay}
           setDifficulty={setDifficulty}
           setSubmitted={setSubmitted}
@@ -161,8 +173,7 @@ function LevelContent({
             setPlay={setPlay}
             setDifficulty={setDifficulty}
             setTimer={setTimer}
-            difficulty={difficulty}
-            play={play}
+            caseDetails={caseDetails}
           />
         </div>
       )}
@@ -173,21 +184,19 @@ function LevelContent({
   );
 }
 // LevelContent COMPONENTS
-function LevelInfo({ difficulty, play, timer, percentage }) {
+function LevelInfo({ caseDetails, timer, percentage }) {
   return (
     <div className="level-info">
       <div className="header-container">
-        <p id="emoji">{difficulty[play - 1].emoji}</p>
+        <p id="emoji">{caseDetails.emoji}</p>
         <div className="role-infp">
           <p id="role">YOUR ROLE</p>
-          <p className="content-title"> {difficulty[play - 1].title} </p>
+          <p className="content-title"> {caseDetails.title} </p>
         </div>
 
         <div className="stats">
-          <p className="content-level">Level: {difficulty[play - 1].id} </p>
-          <p className="content-difficulty">
-            {difficulty[play - 1].difficulty}
-          </p>
+          <p className="content-level">Level: {caseDetails.id} </p>
+          <p className="content-difficulty">{caseDetails.difficulty}</p>
         </div>
       </div>
       <div className="timer">
@@ -209,7 +218,7 @@ function LevelInfo({ difficulty, play, timer, percentage }) {
   );
 }
 
-function CaseContent({ difficulty, play }) {
+function CaseContent({ caseDetails }) {
   const [highlights, setHighlight] = useState([]);
   const [bgColor, setBgColor] = useState();
   const [color, setColor] = useState();
@@ -254,7 +263,7 @@ function CaseContent({ difficulty, play }) {
     <div className="case-container">
       <div className="case-container-header">
         <div className="case-file-highlight">
-          <p id="file">-- CASE FILE #{difficulty[play - 1].number} --</p>
+          <p id="file">-- CASE FILE #{caseDetails.number} --</p>
           <HighlightOtions
             handleHighlightColor={handleHighlightColor}
             bgColor={bgColor}
@@ -268,7 +277,7 @@ function CaseContent({ difficulty, play }) {
           </button>
         </div>
         <div className="case-subtitle">
-          <p className="content-subtitle">{difficulty[play - 1].subTitle}</p>
+          <p className="content-subtitle">{caseDetails.subTitle}</p>
           <p className="highlight-name">
             {colorName ? colorName : "No Highlighter"}
           </p>
@@ -279,7 +288,7 @@ function CaseContent({ difficulty, play }) {
         <Highlighter
           searchWords={highlights}
           autoEscape={true}
-          textToHighlight={difficulty[play - 1].case}
+          textToHighlight={caseDetails.case}
           highlightStyle={{
             background: bgColor ? bgColor : "none",
             color: color ? color : "white",
@@ -292,14 +301,14 @@ function CaseContent({ difficulty, play }) {
     </div>
   );
 }
-function TimeUp({ setPlay, setDifficulty, setTimer, difficulty, play }) {
+function TimeUp({ setPlay, setDifficulty, setTimer, caseDetails }) {
   function handleToMainMenu() {
     setPlay(null);
     setDifficulty(null);
     setTimer(null);
   }
   function handleTryAgain() {
-    setTimer(difficulty[play - 1].timeLimit);
+    setTimer(caseDetails.timeLimit);
   }
   return (
     <div className="time-up-container">
@@ -361,25 +370,25 @@ function HighlightOtions({ handleHighlightColor, bgColor }) {
     </div>
   );
 }
-function QuestionSection({ difficulty, play }) {
+function QuestionSection({ caseDetails }) {
   return (
     <div className="question-section">
       <p>QUESTION... So ?</p>
-      <p className="content-question">{difficulty[play - 1].question}</p>
+      <p className="content-question">{caseDetails.question}</p>
     </div>
   );
 }
-function AnswerSection({ difficulty, play, userAns, setUserAns, submitted }) {
+function AnswerSection({ caseDetails, userAns, setUserAns, submitted }) {
   function handleUserAnswer(userAnswer) {
     setUserAns(userAnswer);
   }
   return (
     <div className="answer-options">
-      {difficulty[play - 1].options.map((optn, index) => {
+      {caseDetails.options.map((optn, index) => {
         return (
           <button
             key={index}
-            className={`option-button ${userAns === optn.key ? "selected" : ""}`}
+            className={`option-button ${userAns === optn.key ? "selected" : ""} ${submitted && userAns === optn.key && userAns !== caseDetails.solution && "missed"}`}
             onClick={() => handleUserAnswer(optn.key)}
             disabled={submitted}
           >
@@ -389,45 +398,47 @@ function AnswerSection({ difficulty, play, userAns, setUserAns, submitted }) {
         );
       })}
 
-      {submitted && (
+      {/* {submitted && (
         <p
-          className={`explanation ${userAns === difficulty[play - 1].solution ? "correct-exp" : "wrong-exp"}`}
+          className={`explanation ${userAns === caseDetails.solution ? "correct-exp" : "wrong-exp"}`}
         >
-          {difficulty[play - 1].explanation}
+          {caseDetails.explanation}
         </p>
-      )}
+      )} */}
     </div>
   );
 }
 function Submittion({
   submitted,
   userAns,
-  difficulty,
-  play,
+  caseDetails,
   setSubmitted,
-  setWrongAnswerings,
+  setMistakes,
 }) {
-  function handleCorrectAnswer() {
-    setSubmitted(true);
+  function handleCheckAnswer() {
+    if (userAns === caseDetails.solution) {
+      setSubmitted(true);
+    } else {
+      setSubmitted(true);
+      setMistakes((prev) => prev + 1);
+    }
   }
-  function handleWrongAnswers() {
-    setSubmitted(true);
-    setWrongAnswerings((prev) => prev + 1);
-  }
-
+  useEffect(() => {
+    if (submitted && userAns !== caseDetails.solution) {
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 1000);
+    }
+  }, [submitted, userAns, caseDetails.solution, setSubmitted]);
   return (
     <div>
       <button
-        className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
-        onClick={
-          userAns === difficulty[play - 1].solution
-            ? handleCorrectAnswer
-            : handleWrongAnswers
-        }
+        className={`submit-answer ${submitted && (userAns === caseDetails.solution ? "correct-answer" : "wrong-answer")}`}
+        onClick={handleCheckAnswer}
       >
         {!submitted
           ? "SUBMIT"
-          : userAns === difficulty[play - 1].solution
+          : userAns === caseDetails.solution
             ? "CORRECT!"
             : "WRONG!"}
       </button>
@@ -435,8 +446,7 @@ function Submittion({
   );
 }
 function CorrectAnswering({
-  difficulty,
-  play,
+  caseDetails,
   setPlay,
   setDifficulty,
   setSubmitted,
@@ -477,11 +487,11 @@ function CorrectAnswering({
         </div>
         <div className="key-clue">
           <p>— THE KEY CLUE —</p>
-          <p>{difficulty[play - 1].explanation}</p>
+          <p>{caseDetails.explanation}</p>
           <button className="next-case" onClick={handleNextLevel}>
-            ▶ Next Case <span>CASE #{difficulty[play - 1].number}</span>
+            ▶ Next Case <span>CASE #{caseDetails.number}</span>
           </button>
-          <p id="up-next">UP NEXT : {difficulty[play].title}</p>
+          <p id="up-next">UP NEXT : {caseDetails.title}</p>
           <button className="return-to-mainmenu" onClick={handleToMainMenu}>
             {" "}
             ← Return to Menu
