@@ -9,6 +9,7 @@ function App() {
 
   const [timer, setTimer] = useState(null); // For inGaame Timer
 
+  const [wrongAnswerings, setWrongAnswerings] = useState(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (play && difficulty) {
@@ -28,19 +29,10 @@ function App() {
           play={play}
           setTimer={setTimer}
           timer={timer}
+          setWrongAnswerings={setWrongAnswerings} //Drop-Drill
+          setPlay={setPlay} //Drop-Drill
+          setDifficulty={setDifficulty} // drop-drill
         />
-      )}
-
-      {timer <= 0 && timer !== null && (
-        <div className="time-up-overlay">
-          <TimeUp
-            setPlay={setPlay}
-            setDifficulty={setDifficulty}
-            setTimer={setTimer}
-            difficulty={difficulty}
-            play={play}
-          />
-        </div>
       )}
     </div>
   );
@@ -95,7 +87,15 @@ function Levels({ difficulty, setPlay }) {
   );
 }
 
-function LevelContent({ difficulty, play, setTimer, timer }) {
+function LevelContent({
+  difficulty,
+  play,
+  setTimer,
+  timer,
+  setWrongAnswerings,
+  setPlay,
+  setDifficulty,
+}) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
@@ -103,13 +103,14 @@ function LevelContent({ difficulty, play, setTimer, timer }) {
   const percentage = (timer / totalTime) * 100;
 
   useEffect(() => {
-    if (timer <= 0) return;
+    if (timer <= 0 || submitted) return;
 
     const countDown = setInterval(() => {
       setTimer((prev) => prev - 1);
     }, 1000);
+
     return () => clearInterval(countDown);
-  }, [timer, setTimer]); //setTimer is stable, meaning they never change. So adding it won't cause extra renders. ESLint just wants it there for safety.
+  }, [timer, setTimer, submitted]); //setTimer is stable, meaning they never change. So adding it won't cause extra renders. ESLint just wants it there for safety.
 
   return (
     <div className="play-content">
@@ -139,9 +140,32 @@ function LevelContent({ difficulty, play, setTimer, timer }) {
           play={play}
           setSubmitted={setSubmitted}
           setTimer={setTimer}
+          setWrongAnswerings={setWrongAnswerings}
         />
       )}
 
+      {submitted && userAns === difficulty[play - 1].solution && (
+        <CorrectAnswering
+          difficulty={difficulty}
+          play={play}
+          setPlay={setPlay}
+          setDifficulty={setDifficulty}
+          setSubmitted={setSubmitted}
+          setUserAns={setUserAns}
+          timer={timer}
+        />
+      )}
+      {timer <= 0 && timer !== null && (
+        <div className="time-up-overlay">
+          <TimeUp
+            setPlay={setPlay}
+            setDifficulty={setDifficulty}
+            setTimer={setTimer}
+            difficulty={difficulty}
+            play={play}
+          />
+        </div>
+      )}
       <p className="footer-text">
         {!submitted ? "-- SELECT YOUR ANSWER --" : "-- STAY SHARP --"}
       </p>
@@ -381,23 +405,90 @@ function Submittion({
   difficulty,
   play,
   setSubmitted,
-  setTimer,
+  setWrongAnswerings,
 }) {
-  function handleSubmittion() {
+  function handleCorrectAnswer() {
     setSubmitted(true);
-    setTimer(null);
+  }
+  function handleWrongAnswers() {
+    setSubmitted(true);
+    setWrongAnswerings((prev) => prev + 1);
+  }
+
+  return (
+    <div>
+      <button
+        className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
+        onClick={
+          userAns === difficulty[play - 1].solution
+            ? handleCorrectAnswer
+            : handleWrongAnswers
+        }
+      >
+        {!submitted
+          ? "SUBMIT"
+          : userAns === difficulty[play - 1].solution
+            ? "CORRECT!"
+            : "WRONG!"}
+      </button>
+    </div>
+  );
+}
+function CorrectAnswering({
+  difficulty,
+  play,
+  setPlay,
+  setDifficulty,
+  setSubmitted,
+  setUserAns,
+  timer,
+}) {
+  function handleNextLevel() {
+    setPlay((prev) => prev + 1);
+    setSubmitted(false);
+    setUserAns(null);
+  }
+  function handleToMainMenu() {
+    setPlay(null);
+    setDifficulty(null);
   }
   return (
-    <button
-      className={`submit-answer ${submitted && (userAns === difficulty[play - 1].solution ? "correct-answer" : "wrong-answer")}`}
-      onClick={handleSubmittion}
-    >
-      {!submitted
-        ? "SUBMIT"
-        : userAns === difficulty[play - 1].solution
-          ? "CORRECT!"
-          : "WRONG!"}
-    </button>
+    <div className="correct-overlay">
+      <div className="corrected-section">
+        <div className="corrected-inform">
+          <p className="case-solved">
+            <span className="solved-dot"></span>
+            CASE SOLVED
+          </p>
+          <p className="check">✓</p>
+          <p className="congrats">Sharp Mind</p>
+          <p className="congrats2">You solved the problem successivly</p>
+        </div>
+        <div className="solved-details">
+          <div className="done-time">
+            TIME LEFT <span id="done-time">{timer + 1}s</span>
+          </div>
+          <div className="tries-number">
+            #TRIES <span id="tries-number">1</span>
+          </div>
+          <div className="streak">
+            STREAK <span id="streak">x🔥</span>
+          </div>
+        </div>
+        <div className="key-clue">
+          <p>— THE KEY CLUE —</p>
+          <p>{difficulty[play - 1].explanation}</p>
+          <button className="next-case" onClick={handleNextLevel}>
+            ▶ Next Case <span>CASE #{difficulty[play - 1].number}</span>
+          </button>
+          <p id="up-next">UP NEXT : {difficulty[play].title}</p>
+          <button className="return-to-mainmenu" onClick={handleToMainMenu}>
+            {" "}
+            ← Return to Menu
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 export default App;
