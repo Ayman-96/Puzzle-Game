@@ -8,6 +8,8 @@ function App() {
   const [play, setPlay] = useState(null);
 
   const [timer, setTimer] = useState(null); // For inGaame Timer
+  const [showProfile, setShowProfile] = useState(false);
+
   const [mistakes, setMistakes] = useState(0);
 
   const currentCase = difficulty && play ? difficulty[play - 1] : null;
@@ -36,7 +38,10 @@ function App() {
   }, [play, difficulty]);
   return (
     <div>
-      {!play && <Main setDifficulty={setDifficulty} />}
+      {!play && !showProfile && (
+        <Main setDifficulty={setDifficulty} setShowProfile={setShowProfile} />
+      )}
+      {showProfile && <UserProfile setShowProfile={setShowProfile} />}
       {difficulty && !play && (
         <Levels difficulty={difficulty} setPlay={setPlay} />
       )}
@@ -55,7 +60,7 @@ function App() {
   );
 }
 
-function Main({ setDifficulty }) {
+function Main({ setDifficulty, setShowProfile }) {
   function handleSetDifficulty(level) {
     setDifficulty(level);
   }
@@ -63,7 +68,11 @@ function Main({ setDifficulty }) {
   return (
     <div className="container">
       <div className="header">
-        <button className="profiletton-button" title="Profile">
+        <button
+          className="profiletton-button"
+          title="Profile"
+          onClick={() => setShowProfile(true)}
+        >
           <img src="/avatars/main-avatar.jpg" alt="Profile" />
         </button>
         <h2 className="title">Solve Problems</h2>
@@ -87,6 +96,170 @@ function Main({ setDifficulty }) {
   );
 }
 
+function UserProfile({ setShowProfile }) {
+  const difficulties = ["easy", "medium", "hard"];
+
+  const accuracy = [
+    {
+      icon: "🥇",
+      amount: 0,
+      nthTry: "FIRST TRY",
+      color: "yellow",
+    },
+    { icon: "🥈", amount: 0, nthTry: "SECOND TRY", color: "grey" },
+    {
+      icon: "🥉",
+      amount: 0,
+      nthTry: "THIRD TRY",
+      color: "brown",
+    },
+    {
+      icon: "💀",
+      amount: 0,
+      nthTry: "LAST TRY",
+      color: "silver",
+    },
+  ];
+  const timeRank = [
+    {
+      icon: "⚡",
+      rank: "INSTANT",
+      quarterDetail: "Solved in 1st quarter of time",
+      amount: 40,
+      color: "yellow",
+    },
+    {
+      icon: "🎯",
+      rank: "SHARP",
+      quarterDetail: "Solved in 2nd quarter of time",
+      amount: 30,
+      color: "red",
+    },
+    {
+      icon: "⏳",
+      rank: "STEADY",
+      quarterDetail: "Solved in 3rd quarter of time",
+      amount: 20,
+      color: "blue",
+    },
+    {
+      icon: "🐢",
+      rank: "TURTLE",
+      quarterDetail: "Solved in 4th quarter of time",
+      amount: 48,
+      color: "green",
+    },
+  ];
+  return (
+    <div className="profile-overlay">
+      <div className="profile-card">
+        <button className="close-profile" onClick={() => setShowProfile(false)}>
+          ↩
+        </button>
+        <div className="basic-details">
+          <img src="/avatars/main-avatar.jpg" alt="Profile" />
+          <div className="player-details">
+            <input
+              type="text"
+              className="username"
+              max={15}
+              value={"New Player"}
+            />
+            <button className="player-badge">Investigator</button>
+            <p className="enter-date">Joined TODAY</p>
+          </div>
+        </div>
+
+        <div className="player-performance">
+          <div className="cases-solved-title">— CASES SOLVED —</div>
+          <div className="amount-cases">
+            {difficulties.map((level) => {
+              return (
+                <div className="cases-solved">
+                  <div className="level-amount">
+                    <p className="case-difficulty diff-color">
+                      <span className={`${level}-dot`}></span>
+                      {level}
+                    </p>
+                    <div className="solved-amount">X/N</div>
+                  </div>
+                  <div className="solved-bar"></div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="accuracy-title">— ACCURACY —</div>
+          <div className="player-accuracy">
+            {accuracy.map((state) => {
+              return (
+                <div className="medals-details">
+                  <div className="accuracy-icon">{state.icon}</div>
+                  <div
+                    className="accuracy-amount"
+                    style={{ color: state.color }}
+                  >
+                    {state.amount}
+                  </div>
+                  <div className="accuracy-try">{state.nthTry}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="first-try-title">— FIRST TRY ACCURACY —</div>
+          <div className="first-try">
+            <div className="first-try-detail">
+              <div id="sniper">SNIPER..!</div>
+              <div>X%</div>
+            </div>
+            <div className="first-try-icon">🎯</div>
+          </div>
+
+          <div className="time-rank-title">— TIME RANK —</div>
+          <div className="rank-explanation">
+            Shows how fast you solved each case within the time limit
+            <div className="rank-exp-case-num">#CASES</div>
+          </div>
+          <div className="player-time-rank">
+            {timeRank.map((rank) => {
+              return (
+                <div className="timer-deal">
+                  <div className="rank-icon">{rank.icon}</div>
+                  <div className="rank-rank">{rank.rank}</div>
+                  <div className="rank-quarter">{rank.quarterDetail}</div>
+                  <div className="rank-amount">{rank.amount}</div>
+                  <div className="rank-bar-track">
+                    <div
+                      className="rank-bar"
+                      style={{
+                        width: `${(rank.amount / 60) * 100}%`,
+                        background: rank.color,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="steak-title">— STREAK RECORD —</div>
+          <div className="player-streak">
+            <div className="current-streak">
+              <p>CURRENT STREAK</p>
+              <div>N🔥</div>
+              <div id="in-a-row">cases in a row</div>
+            </div>
+            <div className="current-streak">
+              <p>LONGEST STREAK</p>
+              <div>N⚡</div>
+              <div id="best-time">all time best</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 function Levels({ difficulty, setPlay }) {
   function handleShowContent(id) {
     setPlay(id);
