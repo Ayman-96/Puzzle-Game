@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { easyLevels, mediumLevels, hardLevels, avatars } from "./data";
+import { levels, avatars } from "./data";
 import Highlighter from "react-highlight-words";
 function App() {
   const [difficulty, setDifficulty] = useState(null);
@@ -14,6 +14,7 @@ function App() {
   const [selectedAvatar, setSelectedAvatar] = useState(
     localStorage.getItem("avatar") || avatars[0], // at first set main img
   );
+
   // DATE JOINED STORAGE
   const dateJoined = localStorage.getItem("dateJoined");
   const date = new Date().toLocaleDateString("en-US", {
@@ -23,6 +24,18 @@ function App() {
   });
   if (!dateJoined) localStorage.setItem("dateJoined", date); // RUN ONCE EVER
 
+  const difficulties = [
+    // different from difficulty
+    {
+      levelName: "easy",
+      desc: "Clear contradictions, simple connections",
+    },
+    { levelName: "medium", desc: "Multiple clues, stronger red herrings" },
+    {
+      levelName: "hard",
+      desc: "Deep complexity, almost-right answers",
+    },
+  ];
   const currentCase = difficulty && play ? difficulty[play - 1] : null;
   const caseDetails = difficulty &&
     play && {
@@ -61,6 +74,9 @@ function App() {
           setDifficulty={setDifficulty}
           setShowProfile={setShowProfile}
           selectedAvatar={selectedAvatar}
+          levels={levels}
+          difficulties={difficulties}
+          difficulty={difficulty}
         />
       )}
       {showProfile && (
@@ -69,6 +85,7 @@ function App() {
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
+          difficulties={difficulties}
         />
       )}
       {difficulty && !play && (
@@ -89,35 +106,97 @@ function App() {
   );
 }
 
-function Main({ setDifficulty, setShowProfile, selectedAvatar }) {
+function Main({
+  setDifficulty,
+  setShowProfile,
+  selectedAvatar,
+  levels,
+  difficulties,
+  difficulty,
+}) {
+  const [selectedLvl, setSelectedLvl] = useState(null);
   function handleSetDifficulty(level) {
     setDifficulty(level);
   }
 
   return (
     <div className="container">
-      <div className="header">
-        <button
-          className="profiletton-button"
-          title="Profile"
-          onClick={() => setShowProfile(true)}
-        >
-          <img src={selectedAvatar} alt="Profile" />
-        </button>
-        <h2 className="title">Solve Problems</h2>
-        <h3>subtitle</h3>
-      </div>
-      <div className="body">
-        <div className="difficulty">
-          <p>Choose a Difficulty :</p>
-          <button id="easy" onClick={() => handleSetDifficulty(easyLevels)}>
-            Easy
+      <div className="main-menu">
+        <div className="header">
+          <button
+            className="profiletton-button"
+            title="Profile"
+            onClick={() => setShowProfile(true)}
+          >
+            <img src={selectedAvatar} alt="Profile" />
           </button>
-          <button id="medium" onClick={() => handleSetDifficulty(mediumLevels)}>
-            Medium
-          </button>
-          <button id="hard" onClick={() => handleSetDifficulty(hardLevels)}>
-            Hard
+          <br />
+
+          <div className="main-menu-title">
+            <div className="uptitle">— Intelligence Puzzle Game —</div>
+            <div className="title">
+              BETWEEN<span>THE LINES</span>
+            </div>
+            <div className="subtitle">
+              DIFFERENT ASPECTS. TRUST <spann>NOTHING</spann>
+            </div>
+          </div>
+        </div>
+
+        <div className="body">
+          <div className="difficulty">
+            <p>
+              SELECT{" "}
+              <span className={`${selectedLvl && selectedLvl}`}>
+                Difficulty{" "}
+              </span>
+              :
+            </p>
+
+            {levels.map((level, index) => {
+              //easy,medium,hardLevel
+              return (
+                <button
+                  className={`diff-button ${level === difficulty && "active"}`}
+                  onClick={() => {
+                    handleSetDifficulty(level);
+                    setSelectedLvl(difficulties[index].levelName);
+                  }}
+                >
+                  <div className="button-content">
+                    <div className="btn-desc">
+                      <span
+                        className={`${difficulties[index].levelName}-dot  ${level === difficulty && "shine-dot"}`}
+                      ></span>
+
+                      <div className={`${level === difficulty && "ready"}`}>
+                        {difficulties[index].levelName}
+                      </div>
+
+                      <div className="level-desc">
+                        {difficulties[index].desc}
+                      </div>
+                    </div>
+
+                    <div className="btn-lvl-length">
+                      LEVELS{" "}
+                      <span
+                        id="num"
+                        className={`${level === difficulty && "ready"}`}
+                      >
+                        {level.length}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <button className={`start-level ${selectedLvl && "ready"}`}>
+            {selectedLvl
+              ? "START " + selectedLvl.toUpperCase()
+              : "SELECT A DIFFICULTY"}
           </button>
         </div>
       </div>
@@ -130,9 +209,8 @@ function UserProfile({
   selectedAvatar,
   setSelectedAvatar,
   dateJoined,
+  difficulties,
 }) {
-  const difficulties = ["easy", "medium", "hard"];
-
   const [showAvatars, setShowAvatars] = useState(false);
   const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
   const [userName, setUserName] = useState(
@@ -249,8 +327,8 @@ function UserProfile({
                 <div className="cases-solved">
                   <div className="level-amount">
                     <p className="case-difficulty diff-color">
-                      <span className={`${level}-dot`}></span>
-                      {level}
+                      <span className={`${level.level}-dot`}></span>
+                      {level.level}
                     </p>
                     <div className="solved-amount">X/N</div>
                   </div>

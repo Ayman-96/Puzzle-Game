@@ -50,7 +50,491 @@ body {
     animation: logo-spin infinite 20s linear;
   }
 }
+/* ══════════════════════════════════════════
+   CONTAINER
+══════════════════════════════════════════ */
 
+.container {
+  min-height: 100vh;
+  background: #08060f;
+  background-image:
+    radial-gradient(
+      ellipse at 50% -10%,
+      rgba(139, 92, 246, 0.18) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(88, 28, 220, 0.07) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 10% 60%,
+      rgba(139, 92, 246, 0.05) 0%,
+      transparent 40%
+    );
+  font-family: "Segoe UI", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* grid */
+.container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* bottom tag */
+.container::after {
+  content: "── BETWEEN THE LINES · v1.0 ──";
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: #1e0d36;
+  letter-spacing: 3px;
+  z-index: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   MAIN MENU
+══════════════════════════════════════════ */
+
+.main-menu {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 80px;
+  gap: 48px;
+}
+/* ── ACTIVE BUTTON — border left per difficulty ── */
+.diff-button.active:has(.easy-dot) {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.diff-button.active:has(.medium-dot) {
+  border-left-color: #facc15;
+  background: rgba(250, 204, 21, 0.05);
+}
+
+.diff-button.active:has(.hard-dot) {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* ── HOVER border left per difficulty ── */
+.diff-button:has(.easy-dot):hover {
+  border-left-color: #22c55e;
+}
+
+.diff-button:has(.medium-dot):hover {
+  border-left-color: #facc15;
+}
+
+.diff-button:has(.hard-dot):hover {
+  border-left-color: #ef4444;
+}
+
+/* ── LEVEL NAME .ready ── */
+.btn-desc > div.ready {
+  color: #c084fc;
+}
+
+.diff-button.active:has(.easy-dot) .btn-desc > div.ready {
+  color: #22c55e;
+}
+
+.diff-button.active:has(.medium-dot) .btn-desc > div.ready {
+  color: #facc15;
+}
+
+.diff-button.active:has(.hard-dot) .btn-desc > div.ready {
+  color: #ef4444;
+}
+
+/* ── LEVELS NUMBER #num .ready ── */
+#num.ready {
+  color: #c084fc;
+}
+
+.diff-button.active:has(.easy-dot) #num.ready {
+  color: #22c55e;
+}
+
+.diff-button.active:has(.medium-dot) #num.ready {
+  color: #facc15;
+}
+
+.diff-button.active:has(.hard-dot) #num.ready {
+  color: #ef4444;
+}
+/* ── SHINE DOT ── */
+.easy-dot.shine-dot {
+  box-shadow:
+    0 0 10px #22c55e,
+    0 0 20px rgba(34, 197, 94, 0.4);
+}
+
+.medium-dot.shine-dot {
+  box-shadow:
+    0 0 10px #facc15,
+    0 0 20px rgba(250, 204, 21, 0.4);
+}
+
+.hard-dot.shine-dot {
+  box-shadow:
+    0 0 10px #ef4444,
+    0 0 20px rgba(239, 68, 68, 0.4);
+}
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  width: 100%;
+}
+
+/* ── PROFILE BUTTON ── */
+.profiletton-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.35);
+  padding: 0;
+  cursor: pointer;
+  background: rgba(139, 92, 246, 0.1);
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+  transition: all 0.2s;
+}
+
+.profiletton-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profiletton-button:hover {
+  border-color: rgba(139, 92, 246, 0.7);
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.4);
+  transform: scale(1.06);
+}
+
+/* ── TITLE BLOCK ── */
+.main-menu-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.uptitle {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 3px;
+  line-height: 1;
+  text-shadow: 0 0 80px rgba(139, 92, 246, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.title span {
+  background: linear-gradient(135deg, #a855f7, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 10px;
+  color: #4c2d7a;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.subtitle spann {
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════
+   BODY
+══════════════════════════════════════════ */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ══════════════════════════════════════════
+   DIFFICULTY
+══════════════════════════════════════════ */
+
+.difficulty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.difficulty p {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 5px;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ── DIFFICULTY BUTTON ── */
+.diff-button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(139, 92, 246, 0.07);
+  border-left: 3px solid rgba(139, 92, 246, 0.1);
+  border-radius: 14px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: "Segoe UI", sans-serif;
+  text-align: left;
+}
+
+.diff-button:hover {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: rgba(139, 92, 246, 0.15);
+  transform: translateX(4px);
+}
+
+.diff-button:hover .easy-dot {
+  box-shadow: 0 0 10px #22c55e;
+}
+.diff-button:hover .medium-dot {
+  box-shadow: 0 0 10px #facc15;
+}
+.diff-button:hover .hard-dot {
+  box-shadow: 0 0 10px #ef4444;
+}
+
+/* selected state — add this class via className when selected */
+.diff-button.active {
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.15);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+}
+
+.btn-desc {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* dots */
+.easy-dot,
+.medium-dot,
+.hard-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: box-shadow 0.15s;
+}
+
+.easy-dot {
+  background: #22c55e;
+}
+.medium-dot {
+  background: #facc15;
+}
+.hard-dot {
+  background: #ef4444;
+}
+
+/* difficulty name */
+.btn-desc > div:nth-child(2) {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #6d3fa8;
+  transition: color 0.15s;
+  margin-bottom: 3px;
+}
+
+.diff-button:hover .btn-desc > div:nth-child(2),
+.diff-button.active .btn-desc > div:nth-child(2) {
+  color: #c084fc;
+}
+
+/* left side is a column */
+.btn-desc {
+  align-items: flex-start;
+}
+
+.btn-desc {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* desc text */
+.level-desc {
+  font-size: 10px;
+  color: #3a1a55;
+  letter-spacing: 0.3px;
+  margin-left: 23px; /* aligns under the name, past the dot gap */
+  margin-top: 3px;
+}
+
+/* wrap name + desc vertically */
+.btn-desc {
+  display: grid;
+  grid-template-columns: 9px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 4px;
+  align-items: center;
+}
+
+.btn-desc > span {
+  grid-row: 1 / 3;
+  align-self: center;
+}
+
+.btn-desc > div:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.level-desc {
+  grid-column: 2;
+  grid-row: 2;
+  margin-left: 0;
+  margin-top: 0;
+}
+
+/* right — levels count */
+.btn-lvl-length {
+  font-size: 9px;
+  color: #3a1a55;
+  letter-spacing: 3px;
+  text-align: right;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.diff-button.active .btn-lvl-length,
+.diff-button:hover .btn-lvl-length {
+  color: #6d3fa8;
+}
+
+#num {
+  display: block;
+  font-size: 20px;
+  font-weight: 900;
+  color: #3a1a55;
+  letter-spacing: 0;
+  transition: color 0.15s;
+}
+
+.diff-button.active #num {
+  color: #a855f7;
+}
+
+.difficulty p span.easy {
+  color: #22c55e;
+}
+
+.difficulty p span.medium {
+  color: #facc15;
+}
+
+.difficulty p span.hard {
+  color: #ef4444;
+}
+/* ══════════════════════════════════════════
+   START BUTTON
+══════════════════════════════════════════ */
+
+.start-level {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  border-radius: 14px;
+  padding: 17px 72px;
+  color: #3a1a55;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  cursor: not-allowed;
+  transition: all 0.2s;
+  font-family: "Segoe UI", sans-serif;
+  width: 100%;
+  max-width: 460px;
+  margin-top: 1rem;
+}
+
+/* when a difficulty is selected add .ready class to the button */
+.start-level.ready {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  box-shadow:
+    0 0 48px rgba(168, 85, 247, 0.35),
+    0 8px 32px rgba(168, 85, 247, 0.2);
+}
+
+.start-level.ready:hover {
+  box-shadow:
+    0 0 64px rgba(168, 85, 247, 0.5),
+    0 8px 40px rgba(168, 85, 247, 0.3);
+  transform: translateY(-1px);
+}
 /* ── PROFILE BUTTON ── */
 .profiletton-button {
   position: absolute;
