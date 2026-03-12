@@ -256,7 +256,7 @@ body {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  background: linear-gradient(135deg, #9321b9, #48056d);
   border: 2px solid #0e0b18;
   display: flex;
   align-items: center;
@@ -491,7 +491,27 @@ body {
 .username:focus {
   border-bottom-color: rgba(168, 85, 247, 0.6);
 }
-
+.change-username-icon {
+  position: absolute;
+  top: 2.6rem;
+  left: 20.4rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f59a8, #a855f7);
+  border: 2px solid #0e0b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  transform: scaleX(-1);
+}
+.change-username-icon:hover {
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
 .player-badge {
   display: inline-flex;
   align-items: center;

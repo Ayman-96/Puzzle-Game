@@ -9,8 +9,12 @@ function App() {
   const [timer, setTimer] = useState(null); // For inGaame Timer
   const [showProfile, setShowProfile] = useState(false);
 
-  const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
   const [mistakes, setMistakes] = useState(0);
+
+  // STORAGE
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    localStorage.getItem("avatar"),
+  );
 
   const currentCase = difficulty && play ? difficulty[play - 1] : null;
   const caseDetails = difficulty &&
@@ -30,12 +34,18 @@ function App() {
       category: currentCase.category,
       timeLimit: currentCase.timeLimit,
     };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (play && difficulty) {
       setTimer(difficulty[play - 1].timeLimit);
     }
   }, [play, difficulty]);
+
+  // STORAGE
+  useEffect(() => {
+    localStorage.setItem("avatar", selectedAvatar);
+  }, [selectedAvatar]);
   return (
     <div>
       {!play && !showProfile && (
@@ -111,6 +121,8 @@ function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
 
   const [showAvatars, setShowAvatars] = useState(false);
   const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
+  const [userName, setUserName] = useState(localStorage.getItem("username"));
+
   const accuracy = [
     {
       icon: "🥇",
@@ -165,6 +177,12 @@ function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
   function handleShowAvatars() {
     setShowAvatars((prev) => !prev);
   }
+  function handleUserName(e) {
+    setUserName(e.target.value);
+  }
+  useEffect(() => {
+    localStorage.setItem("username", userName);
+  }, [userName]);
   return (
     <div className="profile-overlay">
       <div className="profile-card">
@@ -197,9 +215,11 @@ function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
             <input
               type="text"
               className="username"
+              onChange={(e) => handleUserName(e)}
               max={15}
-              value={"New Player"}
+              value={userName}
             />
+            <div className="change-username-icon">✎</div>
             <button className="player-badge">Investigator</button>
             <p className="enter-date">Joined TODAY</p>
           </div>
