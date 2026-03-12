@@ -14,6 +14,7 @@ function App() {
   const [selectedAvatar, setSelectedAvatar] = useState(
     localStorage.getItem("avatar") || avatars[0], // at first set main img
   );
+  const [selectedLvl, setSelectedLvl] = useState(null);
 
   // DATE JOINED STORAGE
   const dateJoined = localStorage.getItem("dateJoined");
@@ -24,8 +25,7 @@ function App() {
   });
   if (!dateJoined) localStorage.setItem("dateJoined", date); // RUN ONCE EVER
 
-  const difficulties = [
-    // different from difficulty
+  const diffLabel = [
     {
       levelName: "easy",
       desc: "Clear contradictions, simple connections",
@@ -74,8 +74,9 @@ function App() {
           setDifficulty={setDifficulty}
           setShowProfile={setShowProfile}
           selectedAvatar={selectedAvatar}
-          levels={levels}
-          difficulties={difficulties}
+          setSelectedLvl={setSelectedLvl}
+          selectedLvl={selectedLvl}
+          diffLabel={diffLabel}
           difficulty={difficulty}
         />
       )}
@@ -85,11 +86,16 @@ function App() {
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
-          difficulties={difficulties}
+          diffLabel={diffLabel}
         />
       )}
       {difficulty && !play && (
-        <Levels difficulty={difficulty} setPlay={setPlay} />
+        <Levels
+          difficulty={difficulty}
+          setPlay={setPlay}
+          levels={levels}
+          diffLabel={diffLabel}
+        />
       )}
 
       {difficulty && play && (
@@ -110,15 +116,11 @@ function Main({
   setDifficulty,
   setShowProfile,
   selectedAvatar,
-  levels,
-  difficulties,
+  setSelectedLvl,
+  selectedLvl,
+  diffLabel,
   difficulty,
 }) {
-  const [selectedLvl, setSelectedLvl] = useState(null);
-  function handleSetDifficulty(level) {
-    setDifficulty(level);
-  }
-
   return (
     <div className="container">
       <div className="main-menu">
@@ -138,59 +140,23 @@ function Main({
               BETWEEN<span>THE LINES</span>
             </div>
             <div className="subtitle">
-              DIFFERENT ASPECTS. TRUST <spann>NOTHING</spann>
+              DIFFERENT ASPECTS. TRUST <span>NOTHING</span>
             </div>
           </div>
         </div>
 
         <div className="body">
           <div className="difficulty">
-            <p>
-              SELECT{" "}
-              <span className={`${selectedLvl && selectedLvl}`}>
-                Difficulty{" "}
-              </span>
-              :
-            </p>
+            {/* prettier-ignore*/}
+            <p> SELECT{" "} 
+              <span className={`${selectedLvl && selectedLvl}`}> Difficulty{" "}</span>:</p>
 
-            {levels.map((level, index) => {
-              //easy,medium,hardLevel
-              return (
-                <button
-                  className={`diff-button ${level === difficulty && "active"}`}
-                  onClick={() => {
-                    handleSetDifficulty(level);
-                    setSelectedLvl(difficulties[index].levelName);
-                  }}
-                >
-                  <div className="button-content">
-                    <div className="btn-desc">
-                      <span
-                        className={`${difficulties[index].levelName}-dot  ${level === difficulty && "shine-dot"}`}
-                      ></span>
-
-                      <div className={`${level === difficulty && "ready"}`}>
-                        {difficulties[index].levelName}
-                      </div>
-
-                      <div className="level-desc">
-                        {difficulties[index].desc}
-                      </div>
-                    </div>
-
-                    <div className="btn-lvl-length">
-                      LEVELS{" "}
-                      <span
-                        id="num"
-                        className={`${level === difficulty && "ready"}`}
-                      >
-                        {level.length}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+            <ShowDifficulty
+              setDifficulty={setDifficulty}
+              setSelectedLvl={setSelectedLvl}
+              difficulty={difficulty}
+              diffLabel={diffLabel}
+            />
           </div>
 
           <button className={`start-level ${selectedLvl && "ready"}`}>
@@ -203,7 +169,53 @@ function Main({
     </div>
   );
 }
+function ShowDifficulty({
+  setDifficulty,
+  setSelectedLvl,
+  difficulty,
+  diffLabel,
+}) {
+  function handleSetDifficulty(level) {
+    setDifficulty(level);
+  }
+  return (
+    <div className="show-difficulty">
+      {levels.map((level, index) => {
+        //easy,medium,hardLevel
+        return (
+          <button
+            className={`diff-button ${level === difficulty && "active"}`}
+            onClick={() => {
+              handleSetDifficulty(level);
+              setSelectedLvl(diffLabel[index].levelName);
+            }}
+          >
+            <div className="button-content">
+              <div className="btn-desc">
+                <span
+                  className={`${diffLabel[index].levelName}-dot  ${level === difficulty && "shine-dot"}`}
+                ></span>
 
+                <div className={`${level === difficulty && "ready"}`}>
+                  {diffLabel[index].levelName}
+                </div>
+
+                <div className="level-desc">{diffLabel[index].desc}</div>
+              </div>
+
+              <div className="btn-lvl-length">
+                LEVELS{" "}
+                <span id="num" className={`${level === difficulty && "ready"}`}>
+                  {level.length}
+                </span>
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 function UserProfile({
   setShowProfile,
   selectedAvatar,
@@ -440,22 +452,36 @@ function Avatars({
     </div>
   );
 }
-function Levels({ difficulty, setPlay }) {
-  function handleShowContent(id) {
-    setPlay(id);
-  }
-  return (
-    <div className="levels">
-      {Array.from({ length: difficulty.length }, (_, i) => {
-        return (
-          <button key={i} onClick={() => handleShowContent(i + 1)}>
-            {i + 1}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+// function Levels({ difficulty, setPlay, levels, diffLabel }) {
+//   function handleShowContent(id) {
+//     setPlay(id);
+//   }
+//   return (
+//     <div className="show-levels-comp">
+//       <div className="select-case-header">
+//         <div>— SELECT CASE —</div>
+//         <div className="case-diff">
+//           <div className="btn-desc">
+//             <span className={`${diffLabel[index].levelName}-dot"}`}></span>
+
+//             <div className={`${level === difficulty && "ready"}`}>
+//               {difficulties[index].levelName}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="levels-container">
+//         {Array.from({ length: difficulty.length }, (_, i) => {
+//           return (
+//             <button key={i} onClick={() => handleShowContent(i + 1)}>
+//               {i + 1}
+//             </button>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
 
 function LevelContent({
   caseDetails,
