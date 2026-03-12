@@ -151,7 +151,7 @@ function Main({
             <p> SELECT{" "} 
               <span className={`${selectedLvl && selectedLvl}`}> Difficulty{" "}</span>:</p>
 
-            <ShowDifficulty
+            <ShowDifficultyLevels
               setDifficulty={setDifficulty}
               setSelectedLvl={setSelectedLvl}
               difficulty={difficulty}
@@ -159,6 +159,17 @@ function Main({
               levels={levels}
             />
           </div>
+
+          {showLevels && (
+            <Levels
+              difficulty={difficulty}
+              setPlay={setPlay}
+              levels={levels}
+              diffLabel={diffLabel}
+              selectedLvl={selectedLvl}
+              handleShowLevels={handleShowLevels}
+            />
+          )}
 
           <button
             className={`start-level ${selectedLvl && "ready"}`}
@@ -170,20 +181,291 @@ function Main({
           </button>
         </div>
       </div>
-      {showLevels && (
-        <Levels
-          difficulty={difficulty}
-          setPlay={setPlay}
-          levels={levels}
-          diffLabel={diffLabel}
-          selectedLvl={selectedLvl}
-          handleShowLevels={handleShowLevels}
-        />
-      )}
     </div>
   );
 }
-function ShowDifficulty({
+
+// USER PROFILE COMPONENTS
+function UserProfile({
+  setShowProfile,
+  selectedAvatar,
+  setSelectedAvatar,
+  dateJoined,
+  diffLabel,
+}) {
+  return (
+    <div className="profile-overlay">
+      <div className="profile-card">
+        <PlayerDetails
+          setShowProfile={setShowProfile}
+          selectedAvatar={selectedAvatar}
+          setSelectedAvatar={setSelectedAvatar}
+          dateJoined={dateJoined}
+        />
+        <div className="player-performance">
+          <PlayerCasesSolved diffLabel={diffLabel} />
+
+          <PlayerAccuracy />
+
+          <PlayerTimeRank />
+
+          <PlayerStreak />
+        </div>
+      </div>
+    </div>
+  );
+}
+function Avatars({
+  handleShowAvatars,
+  setSelectedAvatar,
+  setChangedAvatarMessage,
+}) {
+  return (
+    <div className="avatar-overlay">
+      <div className="avatars-display">
+        <button className="close-avatars" onClick={handleShowAvatars}>
+          ↩
+        </button>
+        <div className="avatars-grid">
+          {avatars.map((img, index) => (
+            <img
+              src={img}
+              alt="avatar"
+              key={index}
+              className="provided-avatar"
+              onClick={() => {
+                setSelectedAvatar(img);
+                handleShowAvatars();
+                setChangedAvatarMessage(true);
+                setTimeout(() => setChangedAvatarMessage(false), 5000);
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+function PlayerDetails({
+  setShowProfile,
+  selectedAvatar,
+  setSelectedAvatar,
+  dateJoined,
+}) {
+  const [showAvatars, setShowAvatars] = useState(false);
+  const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
+  const [userName, setUserName] = useState(
+    localStorage.getItem("username") || "username",
+  );
+  function handleShowAvatars() {
+    setShowAvatars((prev) => !prev);
+  }
+  function handleUserName(e) {
+    setUserName(e.target.value);
+  }
+  useEffect(() => {
+    localStorage.setItem("username", userName);
+  }, [userName]);
+  return (
+    <div>
+      <button className="close-profile" onClick={() => setShowProfile(false)}>
+        ↩
+      </button>
+      <div className="basic-details">
+        <div className="profile-avatar">
+          <img src={selectedAvatar} alt="Profile" />
+          <button className="change-avatar-icon" onClick={handleShowAvatars}>
+            ✎
+          </button>
+        </div>
+
+        <div className="show-avatars">
+          {showAvatars && (
+            <Avatars
+              handleShowAvatars={handleShowAvatars}
+              setSelectedAvatar={setSelectedAvatar}
+              setChangedAvatarMessage={setChangedAvatarMessage}
+            />
+          )}
+        </div>
+        {changedAvatarMessage && (
+          <div className="changed-avatar-mess">
+            Avatar Changed Successfully!💜
+          </div>
+        )}
+        <div className="player-details">
+          <input
+            type="text"
+            className="username"
+            onChange={(e) => handleUserName(e)}
+            max={15}
+            value={userName}
+          />
+          <div className="change-username-icon">✎</div>
+          <button className="player-badge">Investigator</button>
+          <p className="enter-date">Joined {dateJoined}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+function PlayerCasesSolved({ diffLabel }) {
+  return (
+    <div>
+      <div className="cases-solved-title">— CASES SOLVED —</div>
+      <div className="amount-cases">
+        {diffLabel.map((level, i) => {
+          return (
+            <div className="cases-solved" key={i}>
+              <div className="level-amount">
+                <p className="case-difficulty diff-color">
+                  <span className={`${level.levelName}-dot`}></span>
+                  {level.levelName}
+                </p>
+                <div className="solved-amount">X/N</div>
+              </div>
+              <div className="solved-bar"></div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+function PlayerAccuracy() {
+  const accuracy = [
+    {
+      icon: "🥇",
+      amount: 0,
+      nthTry: "FIRST TRY",
+      color: "yellow",
+    },
+    { icon: "🥈", amount: 0, nthTry: "SECOND TRY", color: "grey" },
+    {
+      icon: "🥉",
+      amount: 0,
+      nthTry: "THIRD TRY",
+      color: "brown",
+    },
+    {
+      icon: "💀",
+      amount: 0,
+      nthTry: "LAST TRY",
+      color: "silver",
+    },
+  ];
+  return (
+    <div>
+      <div className="accuracy-title">— ACCURACY —</div>
+      <div className="player-accuracy">
+        {accuracy.map((state, i) => {
+          return (
+            <div className="medals-details" key={i}>
+              <div className="accuracy-icon">{state.icon}</div>
+              <div className="accuracy-amount" style={{ color: state.color }}>
+                {state.amount}
+              </div>
+              <div className="accuracy-try">{state.nthTry}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="first-try-title">— FIRST TRY ACCURACY —</div>
+      <div className="first-try">
+        <div className="first-try-detail">
+          <div id="sniper">SNIPER..!</div>
+          <div>X%</div>
+        </div>
+        <div className="first-try-icon">🎯</div>
+      </div>
+    </div>
+  );
+}
+function PlayerTimeRank() {
+  const timeRank = [
+    {
+      icon: "⚡",
+      rank: "INSTANT",
+      quarterDetail: "Solved in 1st quarter of time",
+      amount: 40,
+      color: "yellow",
+    },
+    {
+      icon: "🎯",
+      rank: "SHARP",
+      quarterDetail: "Solved in 2nd quarter of time",
+      amount: 30,
+      color: "red",
+    },
+    {
+      icon: "⏳",
+      rank: "STEADY",
+      quarterDetail: "Solved in 3rd quarter of time",
+      amount: 20,
+      color: "blue",
+    },
+    {
+      icon: "🐢",
+      rank: "TURTLE",
+      quarterDetail: "Solved in 4th quarter of time",
+      amount: 48,
+      color: "green",
+    },
+  ];
+  return (
+    <div>
+      <div className="time-rank-title">— TIME RANK —</div>
+      <div className="rank-explanation">
+        Shows how fast you solved each case within the time limit
+        <div className="rank-exp-case-num">#CASES</div>
+      </div>
+      <div className="player-time-rank">
+        {timeRank.map((rank, i) => {
+          return (
+            <div className="timer-deal" key={i}>
+              <div className="rank-icon">{rank.icon}</div>
+              <div className="rank-rank">{rank.rank}</div>
+              <div className="rank-quarter">{rank.quarterDetail}</div>
+              <div className="rank-amount">{rank.amount}</div>
+              <div className="rank-bar-track">
+                <div
+                  className="rank-bar"
+                  style={{
+                    width: `${(rank.amount / 60) * 100}%`,
+                    background: rank.color,
+                  }}
+                ></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+function PlayerStreak() {
+  return (
+    <div>
+      <div className="steak-title">— STREAK RECORD —</div>
+      <div className="player-streak">
+        <div className="current-streak">
+          <p>CURRENT STREAK</p>
+          <div>N🔥</div>
+          <div id="in-a-row">cases in a row</div>
+        </div>
+        <div className="current-streak">
+          <p>LONGEST STREAK</p>
+          <div>N⚡</div>
+          <div id="best-time">all time best</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// LEVELS COMPONENTS
+function ShowDifficultyLevels({
   setDifficulty,
   setSelectedLvl,
   difficulty,
@@ -232,242 +514,6 @@ function ShowDifficulty({
     </div>
   );
 }
-function UserProfile({
-  setShowProfile,
-  selectedAvatar,
-  setSelectedAvatar,
-  dateJoined,
-  diffLabel,
-}) {
-  const [showAvatars, setShowAvatars] = useState(false);
-  const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
-  const [userName, setUserName] = useState(
-    localStorage.getItem("username") || "username",
-  );
-
-  const accuracy = [
-    {
-      icon: "🥇",
-      amount: 0,
-      nthTry: "FIRST TRY",
-      color: "yellow",
-    },
-    { icon: "🥈", amount: 0, nthTry: "SECOND TRY", color: "grey" },
-    {
-      icon: "🥉",
-      amount: 0,
-      nthTry: "THIRD TRY",
-      color: "brown",
-    },
-    {
-      icon: "💀",
-      amount: 0,
-      nthTry: "LAST TRY",
-      color: "silver",
-    },
-  ];
-  const timeRank = [
-    {
-      icon: "⚡",
-      rank: "INSTANT",
-      quarterDetail: "Solved in 1st quarter of time",
-      amount: 40,
-      color: "yellow",
-    },
-    {
-      icon: "🎯",
-      rank: "SHARP",
-      quarterDetail: "Solved in 2nd quarter of time",
-      amount: 30,
-      color: "red",
-    },
-    {
-      icon: "⏳",
-      rank: "STEADY",
-      quarterDetail: "Solved in 3rd quarter of time",
-      amount: 20,
-      color: "blue",
-    },
-    {
-      icon: "🐢",
-      rank: "TURTLE",
-      quarterDetail: "Solved in 4th quarter of time",
-      amount: 48,
-      color: "green",
-    },
-  ];
-  function handleShowAvatars() {
-    setShowAvatars((prev) => !prev);
-  }
-  function handleUserName(e) {
-    setUserName(e.target.value);
-  }
-  useEffect(() => {
-    localStorage.setItem("username", userName);
-  }, [userName]);
-  return (
-    <div className="profile-overlay">
-      <div className="profile-card">
-        <button className="close-profile" onClick={() => setShowProfile(false)}>
-          ↩
-        </button>
-        <div className="basic-details">
-          <div className="profile-avatar">
-            <img src={selectedAvatar} alt="Profile" />
-            <button className="change-avatar-icon" onClick={handleShowAvatars}>
-              ✎
-            </button>
-          </div>
-
-          <div className="show-avatars">
-            {showAvatars && (
-              <Avatars
-                handleShowAvatars={handleShowAvatars}
-                setSelectedAvatar={setSelectedAvatar}
-                setChangedAvatarMessage={setChangedAvatarMessage}
-              />
-            )}
-          </div>
-          {changedAvatarMessage && (
-            <div className="changed-avatar-mess">
-              Avatar Changed Successfully!💜
-            </div>
-          )}
-          <div className="player-details">
-            <input
-              type="text"
-              className="username"
-              onChange={(e) => handleUserName(e)}
-              max={15}
-              value={userName}
-            />
-            <div className="change-username-icon">✎</div>
-            <button className="player-badge">Investigator</button>
-            <p className="enter-date">Joined {dateJoined}</p>
-          </div>
-        </div>
-
-        <div className="player-performance">
-          <div className="cases-solved-title">— CASES SOLVED —</div>
-          <div className="amount-cases">
-            {diffLabel.map((level, i) => {
-              return (
-                <div className="cases-solved" key={i}>
-                  <div className="level-amount">
-                    <p className="case-difficulty diff-color">
-                      <span className={`${level.levelName}-dot`}></span>
-                      {level.levelName}
-                    </p>
-                    <div className="solved-amount">X/N</div>
-                  </div>
-                  <div className="solved-bar"></div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="accuracy-title">— ACCURACY —</div>
-          <div className="player-accuracy">
-            {accuracy.map((state, i) => {
-              return (
-                <div className="medals-details" key={i}>
-                  <div className="accuracy-icon">{state.icon}</div>
-                  <div
-                    className="accuracy-amount"
-                    style={{ color: state.color }}
-                  >
-                    {state.amount}
-                  </div>
-                  <div className="accuracy-try">{state.nthTry}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="first-try-title">— FIRST TRY ACCURACY —</div>
-          <div className="first-try">
-            <div className="first-try-detail">
-              <div id="sniper">SNIPER..!</div>
-              <div>X%</div>
-            </div>
-            <div className="first-try-icon">🎯</div>
-          </div>
-
-          <div className="time-rank-title">— TIME RANK —</div>
-          <div className="rank-explanation">
-            Shows how fast you solved each case within the time limit
-            <div className="rank-exp-case-num">#CASES</div>
-          </div>
-          <div className="player-time-rank">
-            {timeRank.map((rank, i) => {
-              return (
-                <div className="timer-deal" key={i}>
-                  <div className="rank-icon">{rank.icon}</div>
-                  <div className="rank-rank">{rank.rank}</div>
-                  <div className="rank-quarter">{rank.quarterDetail}</div>
-                  <div className="rank-amount">{rank.amount}</div>
-                  <div className="rank-bar-track">
-                    <div
-                      className="rank-bar"
-                      style={{
-                        width: `${(rank.amount / 60) * 100}%`,
-                        background: rank.color,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="steak-title">— STREAK RECORD —</div>
-          <div className="player-streak">
-            <div className="current-streak">
-              <p>CURRENT STREAK</p>
-              <div>N🔥</div>
-              <div id="in-a-row">cases in a row</div>
-            </div>
-            <div className="current-streak">
-              <p>LONGEST STREAK</p>
-              <div>N⚡</div>
-              <div id="best-time">all time best</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-function Avatars({
-  handleShowAvatars,
-  setSelectedAvatar,
-  setChangedAvatarMessage,
-}) {
-  return (
-    <div className="avatar-overlay">
-      <div className="avatars-display">
-        <button className="close-avatars" onClick={handleShowAvatars}>
-          ↩
-        </button>
-        <div className="avatars-grid">
-          {avatars.map((img, index) => (
-            <img
-              src={img}
-              alt="avatar"
-              key={index}
-              className="provided-avatar"
-              onClick={() => {
-                setSelectedAvatar(img);
-                handleShowAvatars();
-                setChangedAvatarMessage(true);
-                setTimeout(() => setChangedAvatarMessage(false), 5000);
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
   function handleShowContent(id) {
     setPlay(id);
@@ -505,7 +551,7 @@ function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
               </div>
               <div>
                 <div>
-                  <div>TIME</div>
+                  <div className="case-availability">✓ | 🔒</div>
                   <div className="lvl-time">{lvl.timeLimit}s</div>
                 </div>
                 <div id="play-icon">▶</div>
@@ -518,6 +564,7 @@ function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
   );
 }
 
+// PLAY-SCREEN
 function LevelContent({
   caseDetails,
   setTimer,
@@ -631,7 +678,33 @@ function LevelInfo({ caseDetails, timer, percentage }) {
     </div>
   );
 }
-
+function HighlightOtions({ handleHighlightColor, bgColor }) {
+  const colors = [
+    { clr: "#eff755", txt: "black", clrNme: "Yellow" },
+    { clr: "pink", txt: "black", clrNme: "Pink" },
+    { clr: "#6fdb51", txt: "black", clrNme: "Green" },
+    { clr: "#82ccee", txt: "black", clrNme: "Blue" },
+    { clr: "white", txt: "black", clrNme: "White" },
+  ];
+  return (
+    <div className="highlight-options">
+      <div className={"highlight-colors"}>
+        {colors.map((color) => {
+          return (
+            <button
+              className={`${color.clrNme.toLowerCase()}-highlighter ${bgColor === color.clr && "selected-color"}`}
+              key={color.clrNme}
+              onClick={() =>
+                handleHighlightColor(color.clr, color.txt, color.clrNme)
+              }
+              title={color.clrNme}
+            ></button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function CaseContent({ caseDetails }) {
   const [highlights, setHighlight] = useState([]);
   const [bgColor, setBgColor] = useState();
@@ -711,75 +784,6 @@ function CaseContent({ caseDetails }) {
             padding: "4px 0px",
           }}
         />
-      </div>
-    </div>
-  );
-}
-function TimeUp({ setPlay, setDifficulty, setTimer, caseDetails }) {
-  function handleToMainMenu() {
-    setPlay(null);
-    setDifficulty(null);
-    setTimer(null);
-  }
-  function handleTryAgain() {
-    setTimer(caseDetails.timeLimit);
-  }
-  return (
-    <div className="time-up-container">
-      <div className="time-up-warning">
-        <div className="timer-emoji">⏱</div>
-        <p>— TIME'S UP! —</p>
-        <h2>Case Unsolved..!</h2>
-        <p>
-          You ran out of time before finding the truth. The case remains open
-        </p>
-        <div className="separation">————————————————</div>
-      </div>
-      <div className="time-up-details">
-        <div className="first-cell-details">
-          <p>#Tries</p>
-        </div>
-        <div className="second-cell-details"></div>
-        <p>Time Rank</p>
-        <div className="third-cell-details">
-          <p>Streak</p>
-        </div>
-      </div>
-      <div className="next-step-buttons">
-        <button className="try-again" onClick={handleTryAgain}>
-          {" "}
-          ▶ TRY AGAIN
-        </button>
-        <button className="go-menu" onClick={handleToMainMenu}>
-          ◀ MENU
-        </button>
-      </div>
-    </div>
-  );
-}
-function HighlightOtions({ handleHighlightColor, bgColor }) {
-  const colors = [
-    { clr: "#eff755", txt: "black", clrNme: "Yellow" },
-    { clr: "pink", txt: "black", clrNme: "Pink" },
-    { clr: "#6fdb51", txt: "black", clrNme: "Green" },
-    { clr: "#82ccee", txt: "black", clrNme: "Blue" },
-    { clr: "white", txt: "black", clrNme: "White" },
-  ];
-  return (
-    <div className="highlight-options">
-      <div className={"highlight-colors"}>
-        {colors.map((color) => {
-          return (
-            <button
-              className={`${color.clrNme.toLowerCase()}-highlighter ${bgColor === color.clr && "selected-color"}`}
-              key={color.clrNme}
-              onClick={() =>
-                handleHighlightColor(color.clr, color.txt, color.clrNme)
-              }
-              title={color.clrNme}
-            ></button>
-          );
-        })}
       </div>
     </div>
   );
@@ -911,6 +915,48 @@ function CorrectAnswering({
             ← Return to Menu
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+function TimeUp({ setPlay, setDifficulty, setTimer, caseDetails }) {
+  function handleToMainMenu() {
+    setPlay(null);
+    setDifficulty(null);
+    setTimer(null);
+  }
+  function handleTryAgain() {
+    setTimer(caseDetails.timeLimit);
+  }
+  return (
+    <div className="time-up-container">
+      <div className="time-up-warning">
+        <div className="timer-emoji">⏱</div>
+        <p>— TIME'S UP! —</p>
+        <h2>Case Unsolved..!</h2>
+        <p>
+          You ran out of time before finding the truth. The case remains open
+        </p>
+        <div className="separation">————————————————</div>
+      </div>
+      <div className="time-up-details">
+        <div className="first-cell-details">
+          <p>#Tries</p>
+        </div>
+        <div className="second-cell-details"></div>
+        <p>Time Rank</p>
+        <div className="third-cell-details">
+          <p>Streak</p>
+        </div>
+      </div>
+      <div className="next-step-buttons">
+        <button className="try-again" onClick={handleTryAgain}>
+          {" "}
+          ▶ TRY AGAIN
+        </button>
+        <button className="go-menu" onClick={handleToMainMenu}>
+          ◀ MENU
+        </button>
       </div>
     </div>
   );

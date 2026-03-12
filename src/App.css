@@ -289,6 +289,8 @@ body {
 .subtitle span {
   color: #7c3aed;
   font-weight: 700;
+  text-decoration: line-through;
+  text-decoration-color: rgb(123, 0, 255);
 }
 
 /* ══════════════════════════════════════════
@@ -769,6 +771,8 @@ body {
   background: #0e0b18;
   width: 100%;
   max-width: 500px;
+  max-height: 60vh;
+  overflow-y: auto;
   border: 1px solid rgba(139, 92, 246, 0.2);
   border-top: none;
   border-radius: 0 0 20px 20px;
@@ -777,8 +781,25 @@ body {
   flex-direction: column;
   gap: 10px;
   box-shadow: 0 0 80px rgba(139, 92, 246, 0.15);
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent; /* Firefox */
+}
+.select-case-body::-webkit-scrollbar {
+  width: 4px;
 }
 
+.select-case-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.select-case-body::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+}
+
+.select-case-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
 /* ══════════════════════════════════════════
    EACH LEVEL CARD
 ══════════════════════════════════════════ */
@@ -826,10 +847,9 @@ body {
   gap: 8px;
   flex-shrink: 0;
 }
-
 .lvl-id {
-  font-size: 10px;
-  color: #3a1a55;
+  font-size: 14px;
+  color: #8c00ff;
   letter-spacing: 2px;
 }
 
@@ -862,6 +882,7 @@ body {
   color: #9d7fc4;
   letter-spacing: 2px;
   transition: color 0.15s;
+  margin-bottom: 5px;
 }
 
 .easy-button:hover .lvl-title {
