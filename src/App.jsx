@@ -11,10 +11,17 @@ function App() {
 
   const [mistakes, setMistakes] = useState(0);
 
-  // STORAGE
   const [selectedAvatar, setSelectedAvatar] = useState(
-    localStorage.getItem("avatar"),
+    localStorage.getItem("avatar") || avatars[0], // at first set main img
   );
+  // DATE JOINED STORAGE
+  const dateJoined = localStorage.getItem("dateJoined");
+  const date = new Date().toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  if (!dateJoined) localStorage.setItem("dateJoined", date); // RUN ONCE EVER
 
   const currentCase = difficulty && play ? difficulty[play - 1] : null;
   const caseDetails = difficulty &&
@@ -46,6 +53,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem("avatar", selectedAvatar);
   }, [selectedAvatar]);
+
   return (
     <div>
       {!play && !showProfile && (
@@ -60,6 +68,7 @@ function App() {
           setShowProfile={setShowProfile}
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
+          dateJoined={dateJoined}
         />
       )}
       {difficulty && !play && (
@@ -116,12 +125,19 @@ function Main({ setDifficulty, setShowProfile, selectedAvatar }) {
   );
 }
 
-function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
+function UserProfile({
+  setShowProfile,
+  selectedAvatar,
+  setSelectedAvatar,
+  dateJoined,
+}) {
   const difficulties = ["easy", "medium", "hard"];
 
   const [showAvatars, setShowAvatars] = useState(false);
   const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
-  const [userName, setUserName] = useState(localStorage.getItem("username"));
+  const [userName, setUserName] = useState(
+    localStorage.getItem("username") || "username",
+  );
 
   const accuracy = [
     {
@@ -221,7 +237,7 @@ function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
             />
             <div className="change-username-icon">✎</div>
             <button className="player-badge">Investigator</button>
-            <p className="enter-date">Joined TODAY</p>
+            <p className="enter-date">Joined {dateJoined}</p>
           </div>
         </div>
 
