@@ -56,8 +56,8 @@ body {
   position: absolute;
   top: 20px;
   left: 24px;
-  width: 44px;
-  height: 44px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   border: 2px solid rgba(139, 92, 246, 0.3);
   padding: 0;
@@ -208,9 +208,69 @@ body {
   background: rgba(139, 92, 246, 0.6);
   cursor: grabbing;
 }
+.close-avatars {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #170c31;
+  border: 1px solid rgba(208, 0, 255, 0.15);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  color: #9b0707;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.close-avatars:hover {
+  border: 1px solid #9b0707;
+  color: rgb(208, 0, 255);
+}
 /* ══════════════════════════════════════════
    CLOSE
 ══════════════════════════════════════════ */
+.profile-avatar {
+  position: relative;
+  width: fit-content;
+  flex-shrink: 0;
+}
+
+.profile-avatar img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+  display: block;
+}
+
+.change-avatar-icon {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: 2px solid #0e0b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.change-avatar-icon:hover {
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+  transform: scale(1.1);
+}
 
 .close-profile {
   position: absolute;
@@ -235,7 +295,156 @@ body {
   color: #c084fc;
   border-color: rgba(139, 92, 246, 0.4);
 }
+/* ── AVATAR OVERLAY ── */
+.avatar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
+/* ── AVATARS DISPLAY ── */
+.avatars-display {
+  background: #0e0b18;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 0 80px rgba(139, 92, 246, 0.15);
+  max-height: 70vh;
+  overflow-y: auto;
+  width: 90%;
+}
+.avatars-display::-webkit-scrollbar {
+  width: 4px;
+}
+
+.avatars-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.avatars-display::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+}
+
+.avatars-display::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
+/* top glow line */
+.avatars-display::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(168, 85, 247, 0.6),
+    transparent
+  );
+}
+
+/* title */
+.avatars-display::after {
+  content: "— CHOOSE AVATAR —";
+  display: block;
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 4px;
+  margin-bottom: 24px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ── GRID ── */
+.avatars-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.avatars-display::after {
+  order: -1;
+}
+
+/* wrap the images in a grid */
+.avatars-display img {
+  display: block;
+}
+
+.provided-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.15);
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.provided-avatar:hover {
+  border-color: rgba(211, 5, 5, 0.7);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.35);
+  transform: scale(1.08);
+}
+
+.provided-avatar.selected {
+  border-color: #a855f7;
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.5);
+  transform: scale(1.08);
+}
+.avatars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  justify-items: center;
+}
+.provided-avatar {
+  cursor: pointer;
+}
+.changed-avatar-mess {
+  position: fixed;
+  top: 20%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  background: #0e0b18;
+  border: 1px solid rgb(133, 0, 169);
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 11px;
+  color: #84fcd0;
+  letter-spacing: 2px;
+  text-align: center;
+  z-index: 300;
+  box-shadow: 0 0 40px#84fcd0;
+  animation: fadeInOut 5s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -54%);
+  }
+}
 /* ══════════════════════════════════════════
    BASIC DETAILS
 ══════════════════════════════════════════ */

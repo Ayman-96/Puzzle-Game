@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { easyLevels, mediumLevels, hardLevels } from "./data";
+import { easyLevels, mediumLevels, hardLevels, avatars } from "./data";
 import Highlighter from "react-highlight-words";
-
 function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
@@ -10,6 +9,7 @@ function App() {
   const [timer, setTimer] = useState(null); // For inGaame Timer
   const [showProfile, setShowProfile] = useState(false);
 
+  const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
   const [mistakes, setMistakes] = useState(0);
 
   const currentCase = difficulty && play ? difficulty[play - 1] : null;
@@ -39,9 +39,19 @@ function App() {
   return (
     <div>
       {!play && !showProfile && (
-        <Main setDifficulty={setDifficulty} setShowProfile={setShowProfile} />
+        <Main
+          setDifficulty={setDifficulty}
+          setShowProfile={setShowProfile}
+          selectedAvatar={selectedAvatar}
+        />
       )}
-      {showProfile && <UserProfile setShowProfile={setShowProfile} />}
+      {showProfile && (
+        <UserProfile
+          setShowProfile={setShowProfile}
+          selectedAvatar={selectedAvatar}
+          setSelectedAvatar={setSelectedAvatar}
+        />
+      )}
       {difficulty && !play && (
         <Levels difficulty={difficulty} setPlay={setPlay} />
       )}
@@ -60,7 +70,7 @@ function App() {
   );
 }
 
-function Main({ setDifficulty, setShowProfile }) {
+function Main({ setDifficulty, setShowProfile, selectedAvatar }) {
   function handleSetDifficulty(level) {
     setDifficulty(level);
   }
@@ -73,7 +83,7 @@ function Main({ setDifficulty, setShowProfile }) {
           title="Profile"
           onClick={() => setShowProfile(true)}
         >
-          <img src="/avatars/main-avatar.jpg" alt="Profile" />
+          <img src={selectedAvatar} alt="Profile" />
         </button>
         <h2 className="title">Solve Problems</h2>
         <h3>subtitle</h3>
@@ -96,9 +106,11 @@ function Main({ setDifficulty, setShowProfile }) {
   );
 }
 
-function UserProfile({ setShowProfile }) {
+function UserProfile({ setShowProfile, selectedAvatar, setSelectedAvatar }) {
   const difficulties = ["easy", "medium", "hard"];
 
+  const [showAvatars, setShowAvatars] = useState(false);
+  const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
   const accuracy = [
     {
       icon: "🥇",
@@ -150,6 +162,9 @@ function UserProfile({ setShowProfile }) {
       color: "green",
     },
   ];
+  function handleShowAvatars() {
+    setShowAvatars((prev) => !prev);
+  }
   return (
     <div className="profile-overlay">
       <div className="profile-card">
@@ -157,7 +172,27 @@ function UserProfile({ setShowProfile }) {
           ↩
         </button>
         <div className="basic-details">
-          <img src="/avatars/main-avatar.jpg" alt="Profile" />
+          <div className="profile-avatar">
+            <img src={selectedAvatar} alt="Profile" />
+            <button className="change-avatar-icon" onClick={handleShowAvatars}>
+              ✎
+            </button>
+          </div>
+
+          <div className="show-avatars">
+            {showAvatars && (
+              <Avatars
+                handleShowAvatars={handleShowAvatars}
+                setSelectedAvatar={setSelectedAvatar}
+                setChangedAvatarMessage={setChangedAvatarMessage}
+              />
+            )}
+          </div>
+          {changedAvatarMessage && (
+            <div className="changed-avatar-mess">
+              Avatar Changed Successfully!💜
+            </div>
+          )}
           <div className="player-details">
             <input
               type="text"
@@ -255,6 +290,37 @@ function UserProfile({ setShowProfile }) {
               <div id="best-time">all time best</div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function Avatars({
+  handleShowAvatars,
+  setSelectedAvatar,
+  setChangedAvatarMessage,
+}) {
+  return (
+    <div className="avatar-overlay">
+      <div className="avatars-display">
+        <button className="close-avatars" onClick={handleShowAvatars}>
+          ↩
+        </button>
+        <div className="avatars-grid">
+          {avatars.map((img, index) => (
+            <img
+              src={img}
+              alt="avatar"
+              key={index}
+              className="provided-avatar"
+              onClick={() => {
+                setSelectedAvatar(img);
+                handleShowAvatars();
+                setChangedAvatarMessage(true);
+                setTimeout(() => setChangedAvatarMessage(false), 5000);
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>
