@@ -1,4 +1,4 @@
-const easyLevels = [
+const easy = [
   {
     id: 1,
     number: "001",
@@ -243,7 +243,7 @@ Layla again — Friday 10:35 PM:
   },
 ];
 
-const mediumLevels = [
+const medium = [
   {
     id: 1,
     title: "THE TRAVEL COMPANION",
@@ -500,7 +500,7 @@ walking from the trail entrance.`,
     timeLimit: 300,
   },
 ];
-const hardLevels = [
+const hard = [
   {
     id: 1,
     title: "THE INVESTIGATOR",
@@ -808,7 +808,7 @@ This email was flagged because the sender's address was previously linked to a s
   },
 ];
 
-export const levels = [easyLevels, mediumLevels, hardLevels];
+export const levels = [easy, medium, hard];
 export const avatars = [
   "/avatars/main-avatar.jpg",
   "/avatars/batman-avatar.jpg",

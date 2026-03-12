@@ -78,6 +78,8 @@ function App() {
           selectedLvl={selectedLvl}
           diffLabel={diffLabel}
           difficulty={difficulty}
+          levels={levels}
+          setPlay={setPlay}
         />
       )}
       {showProfile && (
@@ -86,14 +88,6 @@ function App() {
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
-          diffLabel={diffLabel}
-        />
-      )}
-      {difficulty && !play && (
-        <Levels
-          difficulty={difficulty}
-          setPlay={setPlay}
-          levels={levels}
           diffLabel={diffLabel}
         />
       )}
@@ -120,7 +114,13 @@ function Main({
   selectedLvl,
   diffLabel,
   difficulty,
+  levels,
+  setPlay,
 }) {
+  const [showLevels, setShowLevels] = useState(false);
+  function handleShowLevels() {
+    setShowLevels((prev) => !prev);
+  }
   return (
     <div className="container">
       <div className="main-menu">
@@ -156,16 +156,30 @@ function Main({
               setSelectedLvl={setSelectedLvl}
               difficulty={difficulty}
               diffLabel={diffLabel}
+              levels={levels}
             />
           </div>
 
-          <button className={`start-level ${selectedLvl && "ready"}`}>
+          <button
+            className={`start-level ${selectedLvl && "ready"}`}
+            onClick={handleShowLevels}
+          >
             {selectedLvl
               ? "START " + selectedLvl.toUpperCase()
               : "SELECT A DIFFICULTY"}
           </button>
         </div>
       </div>
+      {showLevels && (
+        <Levels
+          difficulty={difficulty}
+          setPlay={setPlay}
+          levels={levels}
+          diffLabel={diffLabel}
+          selectedLvl={selectedLvl}
+          handleShowLevels={handleShowLevels}
+        />
+      )}
     </div>
   );
 }
@@ -174,6 +188,7 @@ function ShowDifficulty({
   setSelectedLvl,
   difficulty,
   diffLabel,
+  levels,
 }) {
   function handleSetDifficulty(level) {
     setDifficulty(level);
@@ -185,6 +200,7 @@ function ShowDifficulty({
         return (
           <button
             className={`diff-button ${level === difficulty && "active"}`}
+            key={index}
             onClick={() => {
               handleSetDifficulty(level);
               setSelectedLvl(diffLabel[index].levelName);
@@ -221,7 +237,7 @@ function UserProfile({
   selectedAvatar,
   setSelectedAvatar,
   dateJoined,
-  difficulties,
+  diffLabel,
 }) {
   const [showAvatars, setShowAvatars] = useState(false);
   const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
@@ -334,13 +350,13 @@ function UserProfile({
         <div className="player-performance">
           <div className="cases-solved-title">— CASES SOLVED —</div>
           <div className="amount-cases">
-            {difficulties.map((level) => {
+            {diffLabel.map((level, i) => {
               return (
-                <div className="cases-solved">
+                <div className="cases-solved" key={i}>
                   <div className="level-amount">
                     <p className="case-difficulty diff-color">
-                      <span className={`${level.level}-dot`}></span>
-                      {level.level}
+                      <span className={`${level.levelName}-dot`}></span>
+                      {level.levelName}
                     </p>
                     <div className="solved-amount">X/N</div>
                   </div>
@@ -351,9 +367,9 @@ function UserProfile({
           </div>
           <div className="accuracy-title">— ACCURACY —</div>
           <div className="player-accuracy">
-            {accuracy.map((state) => {
+            {accuracy.map((state, i) => {
               return (
-                <div className="medals-details">
+                <div className="medals-details" key={i}>
                   <div className="accuracy-icon">{state.icon}</div>
                   <div
                     className="accuracy-amount"
@@ -382,9 +398,9 @@ function UserProfile({
             <div className="rank-exp-case-num">#CASES</div>
           </div>
           <div className="player-time-rank">
-            {timeRank.map((rank) => {
+            {timeRank.map((rank, i) => {
               return (
-                <div className="timer-deal">
+                <div className="timer-deal" key={i}>
                   <div className="rank-icon">{rank.icon}</div>
                   <div className="rank-rank">{rank.rank}</div>
                   <div className="rank-quarter">{rank.quarterDetail}</div>
@@ -452,36 +468,55 @@ function Avatars({
     </div>
   );
 }
-// function Levels({ difficulty, setPlay, levels, diffLabel }) {
-//   function handleShowContent(id) {
-//     setPlay(id);
-//   }
-//   return (
-//     <div className="show-levels-comp">
-//       <div className="select-case-header">
-//         <div>— SELECT CASE —</div>
-//         <div className="case-diff">
-//           <div className="btn-desc">
-//             <span className={`${diffLabel[index].levelName}-dot"}`}></span>
-
-//             <div className={`${level === difficulty && "ready"}`}>
-//               {difficulties[index].levelName}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="levels-container">
-//         {Array.from({ length: difficulty.length }, (_, i) => {
-//           return (
-//             <button key={i} onClick={() => handleShowContent(i + 1)}>
-//               {i + 1}
-//             </button>
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// }
+function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
+  function handleShowContent(id) {
+    setPlay(id);
+  }
+  return (
+    <div className={`show-levels-comp ${selectedLvl}-comp`}>
+      <div className="select-case-header">
+        <div>— SELECT CASE —</div>
+        <div className="case-diff">
+          <div className="btn-desc">
+            <span className={`${selectedLvl}-dot`}></span>
+            <div className="ready">{selectedLvl}</div>
+            <div>DIFFICULTY</div>
+          </div>
+          <button className="close-levels-popup" onClick={handleShowLevels}>
+            ↩
+          </button>
+        </div>
+      </div>
+      <div className="select-case-body">
+        {difficulty.map((lvl) => {
+          return (
+            <button
+              className={`each-level ${selectedLvl}-button`}
+              key={lvl.id}
+              onClick={() => handleShowContent(lvl.id)}
+            >
+              <div>
+                <div className="lvl-id">#{lvl.number}</div>
+                <div className="lvl-icon">{lvl.emoji}</div>
+              </div>
+              <div>
+                <div className="lvl-title">{lvl.title}</div>
+                <div className="lvl-category">{lvl.category}</div>
+              </div>
+              <div>
+                <div>
+                  <div>TIME</div>
+                  <div className="lvl-time">{lvl.timeLimit}s</div>
+                </div>
+                <div id="play-icon">▶</div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function LevelContent({
   caseDetails,
