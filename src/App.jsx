@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { levels, avatars } from "./data";
 import Highlighter from "react-highlight-words";
+import { useLocalStorageState } from "./localStorage";
 function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
@@ -11,21 +12,19 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   //
   const [mistakes, setMistakes] = useState(0);
-  const [easySolved, setEasySolved] = useState(
-    JSON.parse(localStorage.getItem("easyCases")) || [],
+  const [easySolved, setEasySolved] = useLocalStorageState([], "easyCases");
+  const [mediumSolved, setMediumSolved] = useLocalStorageState(
+    [],
+    "mediumCases",
   );
-  const [mediumSolved, setMediumSolved] = useState(
-    JSON.parse(localStorage.getItem("mediumCases")) || [],
-  );
-  const [hardSolved, setHardSolved] = useState(
-    JSON.parse(localStorage.getItem("hardCases")) || [],
-  );
+  const [hardSolved, setHardSolved] = useLocalStorageState([], "hardCases");
   const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
   //
-  const [selectedAvatar, setSelectedAvatar] = useState(
-    localStorage.getItem("avatar") || avatars[0], // at first set main img
-  );
 
+  const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
+    avatars[0],
+    "avatars",
+  );
   // DATE JOINED STORAGE
   const dateJoined = localStorage.getItem("dateJoined");
   const date = new Date().toLocaleDateString("en-US", {
@@ -71,16 +70,6 @@ function App() {
     }
   }, [play, difficulty]);
 
-  // STORAGE
-  useEffect(() => {
-    localStorage.setItem("avatar", selectedAvatar);
-  }, [selectedAvatar]);
-
-  useEffect(() => {
-    localStorage.setItem("easyCases", JSON.stringify(easySolved));
-    localStorage.setItem("mediumCases", JSON.stringify(mediumSolved));
-    localStorage.setItem("hardCases", JSON.stringify(hardSolved));
-  }, [easySolved, mediumSolved, hardSolved]);
   return (
     <div>
       {!play && !showProfile && (
