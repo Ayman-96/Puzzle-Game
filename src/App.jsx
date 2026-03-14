@@ -1,22 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { levels, avatars } from "./data";
 import Highlighter from "react-highlight-words";
 function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
+  const [selectedLvl, setSelectedLvl] = useState(null);
 
   const [timer, setTimer] = useState(null); // For inGaame Timer
   const [showProfile, setShowProfile] = useState(false);
   //
-
   const [mistakes, setMistakes] = useState(0);
-
+  const [easySolved, setEasySolved] = useState(
+    JSON.parse(localStorage.getItem("easyCases")) || [],
+  );
+  const [mediumSolved, setMediumSolved] = useState(
+    JSON.parse(localStorage.getItem("mediumCases")) || [],
+  );
+  const [hardSolved, setHardSolved] = useState(
+    JSON.parse(localStorage.getItem("hardCases")) || [],
+  );
+  const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
   //
   const [selectedAvatar, setSelectedAvatar] = useState(
     localStorage.getItem("avatar") || avatars[0], // at first set main img
   );
-  const [selectedLvl, setSelectedLvl] = useState(null);
 
   // DATE JOINED STORAGE
   const dateJoined = localStorage.getItem("dateJoined");
@@ -55,9 +63,7 @@ function App() {
       explanation: currentCase.explanation,
       category: currentCase.category,
       timeLimit: currentCase.timeLimit,
-      solved: currentCase.solved,
     };
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (play && difficulty) {
@@ -70,6 +76,11 @@ function App() {
     localStorage.setItem("avatar", selectedAvatar);
   }, [selectedAvatar]);
 
+  useEffect(() => {
+    localStorage.setItem("easyCases", JSON.stringify(easySolved));
+    localStorage.setItem("mediumCases", JSON.stringify(mediumSolved));
+    localStorage.setItem("hardCases", JSON.stringify(hardSolved));
+  }, [easySolved, mediumSolved, hardSolved]);
   return (
     <div>
       {!play && !showProfile && (
@@ -91,8 +102,11 @@ function App() {
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
-          diffLabel={diffLabel}
           levels={levels}
+          easySolved={easySolved}
+          mediumSolved={mediumSolved}
+          hardSolved={hardSolved}
+          solvedCasesContainer={solvedCasesContainer}
         />
       )}
 
@@ -104,6 +118,10 @@ function App() {
           setMistakes={setMistakes} //Drop-Drill
           setPlay={setPlay} //Drop-Drill
           setDifficulty={setDifficulty} // drop-drill
+          setEasySolved={setEasySolved}
+          setMediumSolved={setMediumSolved}
+          setHardSolved={setHardSolved}
+          solvedCasesContainer={solvedCasesContainer}
         />
       )}
     </div>
@@ -195,8 +213,8 @@ function UserProfile({
   selectedAvatar,
   setSelectedAvatar,
   dateJoined,
-  diffLabel,
   levels,
+  solvedCasesContainer,
 }) {
   return (
     <div className="profile-overlay">
@@ -208,7 +226,10 @@ function UserProfile({
           dateJoined={dateJoined}
         />
         <div className="player-performance">
-          <PlayerCasesSolved levels={levels} />
+          <PlayerCasesSolved
+            levels={levels}
+            solvedCasesContainer={solvedCasesContainer}
+          />
 
           <PlayerAccuracy />
 
@@ -314,12 +335,14 @@ function PlayerDetails({
     </div>
   );
 }
-function PlayerCasesSolved({ levels }) {
+function PlayerCasesSolved({ levels, solvedCasesContainer }) {
   return (
     <div>
       <div className="cases-solved-title">— CASES SOLVED —</div>
       <div className="amount-cases">
         {levels.map((level, i) => {
+          const solvedCases = solvedCasesContainer[i].length;
+          const availableCases = level.length;
           //level = easy,medium,hard array of objects
           return (
             <div className="cases-solved" key={i}>
@@ -328,9 +351,17 @@ function PlayerCasesSolved({ levels }) {
                   <span className={`${level[i].difficulty}-dot`}></span>
                   {level[i].difficulty}
                 </p>
-                <div className="solved-amount">X/N</div>
+                <div className="solved-amount">
+                  {solvedCases} / {availableCases}
+                </div>
               </div>
-              <div className="solved-bar"></div>
+              <div
+                className="solved-bar"
+                style={{
+                  width: `${(solvedCases / availableCases) * 100}%`,
+                  backgroundColor: "red",
+                }}
+              ></div>
             </div>
           );
         })}
@@ -578,6 +609,10 @@ function LevelContent({
   setMistakes,
   setPlay,
   setDifficulty,
+  setEasySolved,
+  setMediumSolved,
+  setHardSolved,
+  solvedCasesContainer,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -632,6 +667,9 @@ function LevelContent({
           setSubmitted={setSubmitted}
           setUserAns={setUserAns}
           timer={timer}
+          setEasySolved={setEasySolved}
+          setMediumSolved={setMediumSolved}
+          setHardSolved={setHardSolved}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -878,6 +916,9 @@ function CorrectAnswering({
   setSubmitted,
   setUserAns,
   timer,
+  setEasySolved,
+  setMediumSolved,
+  setHardSolved,
 }) {
   function handleNextLevel() {
     setPlay((prev) => prev + 1);
@@ -888,6 +929,24 @@ function CorrectAnswering({
     setPlay(null);
     setDifficulty(null);
   }
+  // (Achivments) Count Level as Solved
+  const ran = useRef(false);
+
+  useEffect(() => {
+    if (ran.current) return; // to prevent second render (strict mode)
+
+    const setters = {
+      easy: setEasySolved,
+      medium: setMediumSolved,
+      hard: setHardSolved,
+    };
+    const setSolved = setters[caseDetails.difficulty]; // setters[easy],setters[medium]
+
+    setSolved((prev) =>
+      prev.includes(caseDetails.number) ? prev : [...prev, caseDetails.number],
+    );
+    ran.current = true;
+  }, []);
   return (
     <div className="correct-overlay">
       <div className="corrected-section">
