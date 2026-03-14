@@ -2,7 +2,7 @@ const easy = [
   {
     id: 1,
     number: "001",
-    difficulty: "EASY",
+    difficulty: "easy",
     title: "THE NEIGHBOR",
     subTitle: "A letter was slipped under your door by mistake",
     emoji: "📬",
@@ -71,7 +71,7 @@ Monday, 11:03 AM
 
 "Mark, you replied to my submission email on Thursday saying you received it. I still have that reply in my inbox."`,
     number: "002",
-    difficulty: "Easy",
+    difficulty: "easy",
     options: [
       {
         key: "A",
@@ -118,7 +118,7 @@ Physician notes:
 Staff log note — Tuesday 9:10 AM:
 "Dr. Morris called in sick this morning. Shift covered by Dr. James."`,
     number: "003",
-    difficulty: "Easy",
+    difficulty: "easy",
     options: [
       {
         key: "A",
@@ -167,7 +167,7 @@ Contract reference: CDX-2024
 Signing date: September 11th
 Signed by: Mayor's office`,
     number: "004",
-    difficulty: "Easy",
+    difficulty: "easy",
     options: [
       {
         key: "A",
@@ -216,7 +216,7 @@ Layla again — Friday 10:35 PM:
 
 "He's lying. I saw him at the coffee shop near my office on Thursday afternoon. He was never on any flight."`,
     number: "005",
-    difficulty: "Easy",
+    difficulty: "easy",
     options: [
       {
         key: "A",
@@ -295,7 +295,7 @@ Closing Time: 9:30 PM
       { key: "D", text: "The airport board information must be incorrect." },
     ],
     category: "contradiction",
-    difficulty: "Medium",
+    difficulty: "medium",
     timeLimit: 300,
   },
   {
@@ -350,7 +350,7 @@ Five minutes later, the lights dim as the final warning.`,
       { key: "D", text: "All stories could be true." },
     ],
     category: "investigation",
-    difficulty: "Medium",
+    difficulty: "medium",
     timeLimit: 300,
   },
   {
@@ -402,7 +402,7 @@ between 2:00 PM and 2:09 PM.`,
       { key: "D", text: "The security log must be wrong." },
     ],
     category: "contradiction",
-    difficulty: "Medium",
+    difficulty: "medium",
     timeLimit: 300,
   },
   {
@@ -455,13 +455,13 @@ walking from the trail entrance.`,
       { key: "D", text: "All descriptions could be correct." },
     ],
     category: "map",
-    difficulty: "Medium",
+    difficulty: "medium",
     timeLimit: 300,
   },
   {
     id: 5,
     number: "005",
-    difficulty: "HARD",
+    difficulty: "hard",
     category: "map",
     title: "THE PARK RANGER",
     subTitle: "A frantic note recovered from an abandoned campsite",
@@ -542,7 +542,7 @@ Registered: June 28th
 Registered by: Internal system admin account
 Account linked to: First National Bank — Account holder: D. Reyes`,
     number: "001",
-    difficulty: "Hard",
+    difficulty: "hard",
     options: [
       { key: "A", text: "Helen — the CFO" },
       { key: "B", text: "Marcus — Head of Procurement" },
@@ -603,7 +603,7 @@ Phone records — Victor's phone:
 9:35 PM — Outgoing call to Patrick — duration 1 minute
 10:42 PM — Incoming call from unknown number — no answer`,
     number: "002",
-    difficulty: "Hard",
+    difficulty: "hard",
     options: [
       { key: "A", text: "Patrick — Victor's colleague" },
       { key: "B", text: "Nora — Victor's sister" },
@@ -647,7 +647,7 @@ R."
 Analyst background note:
 This email was flagged because the sender's address was previously linked to a surveillance operation. The recipient's address belongs to a known intermediary. In previous intercepted messages from this source, instructions were embedded using the first letter of each sentence.`,
     number: "003",
-    difficulty: "Hard",
+    difficulty: "hard",
     options: [
       {
         key: "A",
@@ -675,7 +675,7 @@ This email was flagged because the sender's address was previously linked to a s
   {
     id: 4,
     number: "004",
-    difficulty: "HARD",
+    difficulty: "hard",
     category: "investigation",
     title: "THE DEFENSE ATTORNEY",
     subTitle: "A witness deposition regarding a midnight getaway",
@@ -717,7 +717,7 @@ This email was flagged because the sender's address was previously linked to a s
   {
     id: 5,
     number: "005",
-    difficulty: "HARD",
+    difficulty: "hard",
     category: "imposter",
     title: "THE CYBER-SECURITY AGENT",
     subTitle: "A high-priority internal 'Security Alert' email",
@@ -766,7 +766,7 @@ This email was flagged because the sender's address was previously linked to a s
   {
     id: 6,
     number: "006",
-    difficulty: "HARD",
+    difficulty: "hard",
     category: "contradiction",
     title: "THE FAMILY MEDIATOR",
     subTitle: "A disputed diary entry found in a weathered leather journal",

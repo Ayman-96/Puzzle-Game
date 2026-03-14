@@ -8,9 +8,11 @@ function App() {
 
   const [timer, setTimer] = useState(null); // For inGaame Timer
   const [showProfile, setShowProfile] = useState(false);
+  //
 
   const [mistakes, setMistakes] = useState(0);
 
+  //
   const [selectedAvatar, setSelectedAvatar] = useState(
     localStorage.getItem("avatar") || avatars[0], // at first set main img
   );
@@ -53,6 +55,7 @@ function App() {
       explanation: currentCase.explanation,
       category: currentCase.category,
       timeLimit: currentCase.timeLimit,
+      solved: currentCase.solved,
     };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +92,7 @@ function App() {
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
           diffLabel={diffLabel}
+          levels={levels}
         />
       )}
 
@@ -192,6 +196,7 @@ function UserProfile({
   setSelectedAvatar,
   dateJoined,
   diffLabel,
+  levels,
 }) {
   return (
     <div className="profile-overlay">
@@ -203,7 +208,7 @@ function UserProfile({
           dateJoined={dateJoined}
         />
         <div className="player-performance">
-          <PlayerCasesSolved diffLabel={diffLabel} />
+          <PlayerCasesSolved levels={levels} />
 
           <PlayerAccuracy />
 
@@ -309,18 +314,19 @@ function PlayerDetails({
     </div>
   );
 }
-function PlayerCasesSolved({ diffLabel }) {
+function PlayerCasesSolved({ levels }) {
   return (
     <div>
       <div className="cases-solved-title">— CASES SOLVED —</div>
       <div className="amount-cases">
-        {diffLabel.map((level, i) => {
+        {levels.map((level, i) => {
+          //level = easy,medium,hard array of objects
           return (
             <div className="cases-solved" key={i}>
               <div className="level-amount">
                 <p className="case-difficulty diff-color">
-                  <span className={`${level.levelName}-dot`}></span>
-                  {level.levelName}
+                  <span className={`${level[i].difficulty}-dot`}></span>
+                  {level[i].difficulty}
                 </p>
                 <div className="solved-amount">X/N</div>
               </div>
@@ -657,7 +663,9 @@ function LevelInfo({ caseDetails, timer, percentage }) {
 
         <div className="stats">
           <p className="content-level">Level: {caseDetails.id} </p>
-          <p className="content-difficulty">{caseDetails.difficulty}</p>
+          <p className="content-difficulty">
+            {caseDetails.difficulty.toUpperCase()}
+          </p>
         </div>
       </div>
       <div className="timer">
