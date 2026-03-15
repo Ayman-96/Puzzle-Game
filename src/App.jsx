@@ -14,7 +14,6 @@ function App() {
   const [timer, setTimer] = useState(null); // For inGaame Timer
   const [showProfile, setShowProfile] = useState(false);
   //
-  const [mistakes, setMistakes] = useState(0);
   const [easySolved, setEasySolved] = useLocalStorageState([], "easyCases");
   const [mediumSolved, setMediumSolved] = useLocalStorageState(
     [],
@@ -23,7 +22,26 @@ function App() {
   const [hardSolved, setHardSolved] = useLocalStorageState([], "hardCases");
   const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
   //
+  // #TRY TO SOLVE
+  const [mistakes, setMistakes] = useState(0);
+  const [numTry, setNumTry] = useLocalStorageState(
+    {
+      first: 0,
+      second: 0,
+      third: 0,
+      last: 0,
+    },
+    "mistakes",
+  );
+  console.log("first :" + numTry.first);
+  console.log("second :" + numTry.second);
 
+  // useEffect(() => {
+  //   setNumTry((prev) => ({ ...prev, first: prev.first + 1 })); // should spread not to delete the obj
+  // }, []);
+  // useEffect(() => {
+  //   console.log(numTry.first);
+  // }, [numTry]);
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
@@ -100,6 +118,7 @@ function App() {
           mediumSolved={mediumSolved}
           hardSolved={hardSolved}
           solvedCasesContainer={solvedCasesContainer}
+          numTry={numTry}
         />
       )}
 
@@ -109,11 +128,14 @@ function App() {
           setTimer={setTimer}
           timer={timer}
           setMistakes={setMistakes} //Drop-Drill
+          mistakes={mistakes}
           setPlay={setPlay} //Drop-Drill
           setDifficulty={setDifficulty} // drop-drill
           setEasySolved={setEasySolved}
           setMediumSolved={setMediumSolved}
           setHardSolved={setHardSolved}
+          setNumTry={setNumTry}
+          solvedCasesContainer={solvedCasesContainer}
         />
       )}
     </div>
@@ -207,6 +229,7 @@ function UserProfile({
   dateJoined,
   levels,
   solvedCasesContainer,
+  numTry,
 }) {
   return (
     <div className="profile-overlay">
@@ -223,7 +246,10 @@ function UserProfile({
             solvedCasesContainer={solvedCasesContainer}
           />
 
-          <PlayerAccuracy />
+          <PlayerAccuracy
+            numTry={numTry}
+            solvedCasesContainer={solvedCasesContainer}
+          />
 
           <PlayerTimeRank />
 
@@ -361,28 +387,40 @@ function PlayerCasesSolved({ levels, solvedCasesContainer }) {
     </div>
   );
 }
-function PlayerAccuracy() {
+function PlayerAccuracy({ numTry }) {
+  const totalSolved = Object.values(numTry).reduce(
+    (totalValue, eachValue) => totalValue + eachValue,
+    0,
+  );
+  const firstPerecntage = (numTry.first / totalSolved) * 100;
   const accuracy = [
     {
       icon: "🥇",
-      amount: 0,
+      amount: numTry.first,
       nthTry: "FIRST TRY",
-      color: "yellow",
+      color: "#FFD700",
     },
-    { icon: "🥈", amount: 0, nthTry: "SECOND TRY", color: "grey" },
+    {
+      icon: "🥈",
+      amount: numTry.second,
+      nthTry: "SECOND TRY",
+      color: "#C0C0C0",
+    },
     {
       icon: "🥉",
-      amount: 0,
+      amount: numTry.third,
       nthTry: "THIRD TRY",
-      color: "brown",
+      color: "#CD7F32",
     },
     {
       icon: "💀",
-      amount: 0,
+      amount: numTry.last,
       nthTry: "LAST TRY",
-      color: "silver",
+      color: "#720f0f",
     },
   ];
+
+  console.log(totalSolved);
   return (
     <div>
       <div className="accuracy-title">— ACCURACY —</div>
@@ -404,7 +442,7 @@ function PlayerAccuracy() {
       <div className="first-try">
         <div className="first-try-detail">
           <div id="sniper">SNIPER..!</div>
-          <div>X%</div>
+          <div>{firstPerecntage}%</div>
         </div>
         <div className="first-try-icon">🎯</div>
       </div>
@@ -550,7 +588,6 @@ function Levels({
   handleShowLevels,
   solvedCasesContainer,
 }) {
-  console.log(selectedLvl);
   function handleShowContent(id) {
     setPlay(id);
   }
@@ -627,11 +664,14 @@ function LevelContent({
   setTimer,
   timer,
   setMistakes,
+  mistakes,
   setPlay,
   setDifficulty,
   setEasySolved,
   setMediumSolved,
   setHardSolved,
+  setNumTry,
+  solvedCasesContainer,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -675,6 +715,8 @@ function LevelContent({
           setSubmitted={setSubmitted}
           setTimer={setTimer}
           setMistakes={setMistakes}
+          mistakes={mistakes}
+          setNumTry={setNumTry}
         />
       )}
 
@@ -689,6 +731,10 @@ function LevelContent({
           setEasySolved={setEasySolved}
           setMediumSolved={setMediumSolved}
           setHardSolved={setHardSolved}
+          setMistakes={setMistakes}
+          mistakes={mistakes}
+          setNumTry={setNumTry}
+          solvedCasesContainer={solvedCasesContainer}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -938,13 +984,20 @@ function CorrectAnswering({
   setEasySolved,
   setMediumSolved,
   setHardSolved,
+  setMistakes,
+  mistakes,
+  setNumTry,
+  solvedCasesContainer,
 }) {
   function handleNextLevel() {
     setPlay((prev) => prev + 1);
     setSubmitted(false);
     setUserAns(null);
+    setMistakes(0);
   }
   function handleToMainMenu() {
+    setMistakes(0);
+
     setPlay(null);
     setDifficulty(null);
   }
@@ -966,6 +1019,37 @@ function CorrectAnswering({
     );
     ran.current = true;
   }, []);
+
+  const ref = useRef(false);
+  const preventDup = {
+    easy: 0,
+    medium: 1,
+    hard: 2,
+  };
+  const setTry = {
+    // also an array is possible [0] = first
+    0: "first",
+    1: "second",
+    2: "third",
+    3: "last",
+  };
+  useEffect(() => {
+    if (ref.current) return;
+
+    if (
+      // prevent solved cases to count
+      !solvedCasesContainer[preventDup[caseDetails.difficulty]].includes(
+        caseDetails.number,
+      )
+    ) {
+      const select = setTry[mistakes];
+      console.log(select);
+      setNumTry((prev) => ({ ...prev, [select]: prev[select] + 1 })); // [] = Use the value inside the variable as the key
+    }
+
+    ref.current = true;
+  }, []);
+
   return (
     <div className="correct-overlay">
       <div className="corrected-section">
