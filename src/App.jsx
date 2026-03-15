@@ -33,9 +33,15 @@ function App() {
     },
     "mistakes",
   );
-  console.log("first :" + numTry.first);
-  console.log("second :" + numTry.second);
 
+  // TIME RANK
+  const [solvedQuarter, setSolvedQuarter] = useState({
+    first: 0,
+    second: 0,
+    third: 0,
+    fourth: 0,
+  });
+  console.log(solvedQuarter);
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
@@ -131,6 +137,7 @@ function App() {
           setNumTry={setNumTry}
           solvedCasesContainer={solvedCasesContainer}
           setSelectedLvl={setSelectedLvl}
+          setSolvedQuarter={setSolvedQuarter}
         />
       )}
     </div>
@@ -206,6 +213,7 @@ function Main({
             className={`start-level ${selectedLvl && "ready"}`}
             onClick={handleShowLevels}
             disabled={!selectedLvl}
+            title={!selectedLvl ? "Select a Difficulty" : "Start Level"}
           >
             {selectedLvl
               ? "START " + selectedLvl.toUpperCase()
@@ -670,6 +678,7 @@ function LevelContent({
   setNumTry,
   solvedCasesContainer,
   setSelectedLvl,
+  setSolvedQuarter,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -713,8 +722,6 @@ function LevelContent({
           setSubmitted={setSubmitted}
           setTimer={setTimer}
           setMistakes={setMistakes}
-          mistakes={mistakes}
-          setNumTry={setNumTry}
         />
       )}
 
@@ -734,6 +741,7 @@ function LevelContent({
           setNumTry={setNumTry}
           solvedCasesContainer={solvedCasesContainer}
           setSelectedLvl={setSelectedLvl}
+          setSolvedQuarter={setSolvedQuarter}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -942,14 +950,18 @@ function Submittion({
   userAns,
   caseDetails,
   setSubmitted,
+  setTimer,
   setMistakes,
 }) {
+  const totalTime = caseDetails.timeLimit;
+
   function handleCheckAnswer() {
     if (userAns === caseDetails.solution) {
       setSubmitted(true);
     } else {
       setSubmitted(true);
       setMistakes((prev) => prev + 1);
+      setTimer((prev) => prev - totalTime / 4); // reduce timer by 1/4
     }
   }
   useEffect(() => {
@@ -989,6 +1001,7 @@ function CorrectAnswering({
   setNumTry,
   solvedCasesContainer,
   setSelectedLvl,
+  setSolvedQuarter,
 }) {
   function handleNextLevel() {
     setPlay((prev) => prev + 1);
@@ -1049,6 +1062,29 @@ function CorrectAnswering({
     }
 
     ref.current = true;
+  }, []);
+
+  const totalTime = caseDetails.timeLimit; // 100
+  const quarterAmount = totalTime / 4; //25
+  const ren = useRef(false);
+
+  useEffect(() => {
+    if (ren.current) return;
+    if (
+      // prevent solved cases to count
+      !solvedCasesContainer[preventDup[caseDetails.difficulty]].includes(
+        caseDetails.number,
+      )
+    ) {
+      if (timer >= quarterAmount * 3)
+        setSolvedQuarter((prev) => ({ ...prev, first: prev.first + 1 }));
+      else if (timer >= quarterAmount * 2)
+        setSolvedQuarter((prev) => ({ ...prev, second: prev.second + 1 }));
+      else if (timer >= quarterAmount)
+        setSolvedQuarter((prev) => ({ ...prev, third: prev.third + 1 }));
+      else setSolvedQuarter((prev) => ({ ...prev, fourth: prev.fourth + 1 }));
+    }
+    ren.current = true;
   }, []);
 
   return (
