@@ -3,6 +3,9 @@ import "./App.css";
 import { levels, avatars } from "./data";
 import Highlighter from "react-highlight-words";
 import { useLocalStorageState } from "./localStorage";
+import { FaLock, FaLockOpen } from "react-icons/fa";
+import { FaCircleCheck } from "react-icons/fa6";
+
 function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
@@ -83,6 +86,7 @@ function App() {
           difficulty={difficulty}
           levels={levels}
           setPlay={setPlay}
+          solvedCasesContainer={solvedCasesContainer}
         />
       )}
       {showProfile && (
@@ -110,7 +114,6 @@ function App() {
           setEasySolved={setEasySolved}
           setMediumSolved={setMediumSolved}
           setHardSolved={setHardSolved}
-          solvedCasesContainer={solvedCasesContainer}
         />
       )}
     </div>
@@ -127,6 +130,7 @@ function Main({
   difficulty,
   levels,
   setPlay,
+  solvedCasesContainer,
 }) {
   const [showLevels, setShowLevels] = useState(false);
   function handleShowLevels() {
@@ -175,10 +179,9 @@ function Main({
             <Levels
               difficulty={difficulty}
               setPlay={setPlay}
-              levels={levels}
-              diffLabel={diffLabel}
               selectedLvl={selectedLvl}
               handleShowLevels={handleShowLevels}
+              solvedCasesContainer={solvedCasesContainer}
             />
           )}
 
@@ -540,7 +543,14 @@ function ShowDifficultyLevels({
     </div>
   );
 }
-function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
+function Levels({
+  difficulty,
+  setPlay,
+  selectedLvl,
+  handleShowLevels,
+  solvedCasesContainer,
+}) {
+  console.log(selectedLvl);
   function handleShowContent(id) {
     setPlay(id);
   }
@@ -561,11 +571,24 @@ function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
       </div>
       <div className="select-case-body">
         {difficulty.map((lvl) => {
+          const setter = {
+            easy: solvedCasesContainer[0],
+            medium: solvedCasesContainer[1],
+            hard: solvedCasesContainer[2],
+          };
+          const solvedCases = setter[lvl.difficulty]; // ex. setter[easy]
+          const openedCase = solvedCases.length + 1;
           return (
             <button
               className={`each-level ${selectedLvl}-button`}
               key={lvl.id}
               onClick={() => handleShowContent(lvl.id)}
+              aria-disabled={
+                !solvedCases.includes(lvl.number) && openedCase !== lvl.id
+              }
+              disabled={
+                !solvedCases.includes(lvl.number) && openedCase !== lvl.id
+              }
             >
               <div>
                 <div className="lvl-id">#{lvl.number}</div>
@@ -577,7 +600,15 @@ function Levels({ difficulty, setPlay, selectedLvl, handleShowLevels }) {
               </div>
               <div>
                 <div>
-                  <div className="case-availability">✓ | 🔒</div>
+                  <div className="case-availability">
+                    {solvedCases.includes(lvl.number) ? ( // if solved includes
+                      <FaCircleCheck id="fa-circle-check" />
+                    ) : openedCase === lvl.id ? ( // if not included but 1 lvl after
+                      <FaLockOpen id="fa-lock-open" />
+                    ) : (
+                      <FaLock id="fa-lock" />
+                    )}
+                  </div>
                   <div className="lvl-time">{lvl.timeLimit}s</div>
                 </div>
                 <div id="play-icon">▶</div>
@@ -601,7 +632,6 @@ function LevelContent({
   setEasySolved,
   setMediumSolved,
   setHardSolved,
-  solvedCasesContainer,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
