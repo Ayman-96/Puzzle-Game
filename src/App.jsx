@@ -136,6 +136,7 @@ function App() {
           setHardSolved={setHardSolved}
           setNumTry={setNumTry}
           solvedCasesContainer={solvedCasesContainer}
+          setSelectedLvl={setSelectedLvl}
         />
       )}
     </div>
@@ -207,9 +208,10 @@ function Main({
             />
           )}
 
-          <button
+          <button // Start Button
             className={`start-level ${selectedLvl && "ready"}`}
             onClick={handleShowLevels}
+            disabled={!selectedLvl}
           >
             {selectedLvl
               ? "START " + selectedLvl.toUpperCase()
@@ -672,6 +674,7 @@ function LevelContent({
   setHardSolved,
   setNumTry,
   solvedCasesContainer,
+  setSelectedLvl,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -735,6 +738,7 @@ function LevelContent({
           mistakes={mistakes}
           setNumTry={setNumTry}
           solvedCasesContainer={solvedCasesContainer}
+          setSelectedLvl={setSelectedLvl}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -744,6 +748,7 @@ function LevelContent({
             setDifficulty={setDifficulty}
             setTimer={setTimer}
             caseDetails={caseDetails}
+            setSelectedLvl={setSelectedLvl}
           />
         </div>
       )}
@@ -988,6 +993,7 @@ function CorrectAnswering({
   mistakes,
   setNumTry,
   solvedCasesContainer,
+  setSelectedLvl,
 }) {
   function handleNextLevel() {
     setPlay((prev) => prev + 1);
@@ -996,10 +1002,10 @@ function CorrectAnswering({
     setMistakes(0);
   }
   function handleToMainMenu() {
-    setMistakes(0);
-
     setPlay(null);
     setDifficulty(null);
+    setSelectedLvl(null);
+    setMistakes(0);
   }
   // (Achivments) Count Level as Solved
   const ran = useRef(false);
@@ -1089,11 +1095,18 @@ function CorrectAnswering({
     </div>
   );
 }
-function TimeUp({ setPlay, setDifficulty, setTimer, caseDetails }) {
+function TimeUp({
+  setPlay,
+  setDifficulty,
+  setTimer,
+  caseDetails,
+  setSelectedLvl,
+}) {
   function handleToMainMenu() {
     setPlay(null);
     setDifficulty(null);
     setTimer(null);
+    setSelectedLvl(null);
   }
   function handleTryAgain() {
     setTimer(caseDetails.timeLimit);
