@@ -36,12 +36,6 @@ function App() {
   console.log("first :" + numTry.first);
   console.log("second :" + numTry.second);
 
-  // useEffect(() => {
-  //   setNumTry((prev) => ({ ...prev, first: prev.first + 1 })); // should spread not to delete the obj
-  // }, []);
-  // useEffect(() => {
-  //   console.log(numTry.first);
-  // }, [numTry]);
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
@@ -356,6 +350,7 @@ function PlayerDetails({
   );
 }
 function PlayerCasesSolved({ levels, solvedCasesContainer }) {
+  const colorBars = ["green", "yellow", "red"];
   return (
     <div>
       <div className="cases-solved-title">— CASES SOLVED —</div>
@@ -379,7 +374,7 @@ function PlayerCasesSolved({ levels, solvedCasesContainer }) {
                 className="solved-bar"
                 style={{
                   width: `${(solvedCases / availableCases) * 100}%`,
-                  backgroundColor: "red",
+                  backgroundColor: colorBars[i],
                 }}
               ></div>
             </div>
