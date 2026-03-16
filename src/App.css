@@ -2669,11 +2669,20 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
 /* ── UP NEXT — more visible ── */
 #up-next {
   font-size: 14px;
-  color: #6d28d9; /* brighter */
+  color: #a428d9; /* brighter */
   letter-spacing: 1px;
   margin: 6px 0 0;
   text-align: center;
   margin-top: 20px;
+}
+#finished-diff-easy {
+  color: #22c55e;
+}
+#finished-diff-medium {
+  color: #d4a017;
+}
+#finished-diff-hard {
+  color: #9b0707;
 }
 /* ── RETURN TO MENU ── */
 .return-to-mainmenu {

@@ -1011,7 +1011,7 @@ function CorrectAnswering({
   setSolvedQuarter,
 }) {
   function handleNextLevel() {
-    setPlay((prev) => prev + 1);
+    setPlay((prev) => (questNumber !== nextLvlCheck.length ? prev + 1 : null)); // condition for last level
     setSubmitted(false);
     setUserAns(null);
     setMistakes(0);
@@ -1092,7 +1092,12 @@ function CorrectAnswering({
     }
     ren.current = true;
   }, []);
+  const questNumber = caseDetails.id; // 5
+  const nextLvlCheck = levels[preventDup[caseDetails.difficulty]]; // 5;
 
+  console.log(nextLvlCheck);
+  console.log(questNumber);
+  console.log(caseDetails.number);
   return (
     <div className="correct-overlay">
       <div className="corrected-section">
@@ -1120,12 +1125,31 @@ function CorrectAnswering({
           <p>— THE KEY CLUE —</p>
           <p>{caseDetails.explanation}</p>
           <button className="next-case" onClick={handleNextLevel}>
-            ▶ Next Case <span>CASE #{caseDetails.number}</span>
+            {questNumber === nextLvlCheck.length ? (
+              " ◀ Go to Main Menu"
+            ) : (
+              <>
+                ▶ Next Case{" "}
+                <span>CASE #{nextLvlCheck[questNumber].number}</span>
+              </>
+            )}
           </button>
-          <p id="up-next">UP NEXT : {caseDetails.title}</p>
+          <p id="up-next">
+            {nextLvlCheck[questNumber] ? (
+              `UP NEXT : ${nextLvlCheck[questNumber].title}`
+            ) : (
+              <>
+                🕵️ CASE FILES CLOSED —{" "}
+                <span id={`finished-diff-${caseDetails.difficulty}`}>
+                  {caseDetails.difficulty.toUpperCase()}
+                </span>{" "}
+                DIFFICULTY CONQUERED!
+              </>
+            )}
+          </p>
           <button className="return-to-mainmenu" onClick={handleToMainMenu}>
             {" "}
-            ← Return to Menu
+            {questNumber === nextLvlCheck.length ? "" : "← Return to Menu "}
           </button>
         </div>
       </div>

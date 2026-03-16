@@ -461,7 +461,7 @@ walking from the trail entrance.`,
   {
     id: 5,
     number: "005",
-    difficulty: "hard",
+    difficulty: "medium",
     category: "map",
     title: "THE PARK RANGER",
     subTitle: "A frantic note recovered from an abandoned campsite",
