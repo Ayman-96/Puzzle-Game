@@ -35,13 +35,15 @@ function App() {
   );
 
   // TIME RANK
-  const [solvedQuarter, setSolvedQuarter] = useState({
-    first: 0,
-    second: 0,
-    third: 0,
-    fourth: 0,
-  });
-  console.log(solvedQuarter);
+  const [solvedQuarter, setSolvedQuarter] = useLocalStorageState(
+    {
+      first: 0,
+      second: 0,
+      third: 0,
+      fourth: 0,
+    },
+    "solvedQuarters",
+  );
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
@@ -114,11 +116,9 @@ function App() {
           setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
           levels={levels}
-          easySolved={easySolved}
-          mediumSolved={mediumSolved}
-          hardSolved={hardSolved}
           solvedCasesContainer={solvedCasesContainer}
           numTry={numTry}
+          solvedQuarter={solvedQuarter}
         />
       )}
 
@@ -234,6 +234,7 @@ function UserProfile({
   levels,
   solvedCasesContainer,
   numTry,
+  solvedQuarter,
 }) {
   return (
     <div className="profile-overlay">
@@ -255,7 +256,10 @@ function UserProfile({
             solvedCasesContainer={solvedCasesContainer}
           />
 
-          <PlayerTimeRank />
+          <PlayerTimeRank
+            solvedQuarter={solvedQuarter}
+            solvedCasesContainer={solvedCasesContainer}
+          />
 
           <PlayerStreak />
         </div>
@@ -425,7 +429,6 @@ function PlayerAccuracy({ numTry }) {
     },
   ];
 
-  console.log(totalSolved);
   return (
     <div>
       <div className="accuracy-title">— ACCURACY —</div>
@@ -454,37 +457,41 @@ function PlayerAccuracy({ numTry }) {
     </div>
   );
 }
-function PlayerTimeRank() {
+function PlayerTimeRank({ solvedQuarter, solvedCasesContainer }) {
   const timeRank = [
     {
       icon: "⚡",
       rank: "INSTANT",
       quarterDetail: "Solved in 1st quarter of time",
-      amount: 40,
+      amount: solvedQuarter.first,
       color: "yellow",
     },
     {
       icon: "🎯",
       rank: "SHARP",
       quarterDetail: "Solved in 2nd quarter of time",
-      amount: 30,
+      amount: solvedQuarter.second,
       color: "red",
     },
     {
       icon: "⏳",
       rank: "STEADY",
       quarterDetail: "Solved in 3rd quarter of time",
-      amount: 20,
+      amount: solvedQuarter.third,
       color: "blue",
     },
     {
       icon: "🐢",
       rank: "TURTLE",
       quarterDetail: "Solved in 4th quarter of time",
-      amount: 48,
+      amount: solvedQuarter.fourth,
       color: "green",
     },
   ];
+  const solvedLength = Object.values(solvedCasesContainer).reduce(
+    (total, eachObj) => total + eachObj.length,
+    0,
+  );
   return (
     <div>
       <div className="time-rank-title">— TIME RANK —</div>
@@ -504,7 +511,7 @@ function PlayerTimeRank() {
                 <div
                   className="rank-bar"
                   style={{
-                    width: `${(rank.amount / 60) * 100}%`,
+                    width: `${(rank.amount / solvedLength) * 100}%`,
                     background: rank.color,
                   }}
                 ></div>
@@ -1057,7 +1064,6 @@ function CorrectAnswering({
       )
     ) {
       const select = setTry[mistakes];
-      console.log(select);
       setNumTry((prev) => ({ ...prev, [select]: prev[select] + 1 })); // [] = Use the value inside the variable as the key
     }
 
