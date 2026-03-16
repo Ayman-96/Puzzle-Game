@@ -1676,7 +1676,9 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
 /* ══════════════════════════════════════════
    STREAK
 ══════════════════════════════════════════ */
-
+.streak-comp {
+  margin-top: 20px;
+}
 .player-streak {
   display: flex;
   gap: 10px;

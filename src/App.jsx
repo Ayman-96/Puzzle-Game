@@ -44,6 +44,11 @@ function App() {
     },
     "solvedQuarters",
   );
+  // Streak
+  const [streak, setStreak] = useLocalStorageState(
+    { currentStreak: 0, longestStreak: 0 },
+    "streak",
+  );
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
@@ -138,6 +143,7 @@ function App() {
           solvedCasesContainer={solvedCasesContainer}
           setSelectedLvl={setSelectedLvl}
           setSolvedQuarter={setSolvedQuarter}
+          setStreak={setStreak}
         />
       )}
     </div>
@@ -525,7 +531,7 @@ function PlayerTimeRank({ solvedQuarter, solvedCasesContainer }) {
 }
 function PlayerStreak() {
   return (
-    <div>
+    <div className="streak-comp">
       <div className="steak-title">— STREAK RECORD —</div>
       <div className="player-streak">
         <div className="current-streak">
@@ -686,6 +692,7 @@ function LevelContent({
   solvedCasesContainer,
   setSelectedLvl,
   setSolvedQuarter,
+  setStreak,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -729,6 +736,7 @@ function LevelContent({
           setSubmitted={setSubmitted}
           setTimer={setTimer}
           setMistakes={setMistakes}
+          setStreak={setStreak}
         />
       )}
 
@@ -749,6 +757,7 @@ function LevelContent({
           solvedCasesContainer={solvedCasesContainer}
           setSelectedLvl={setSelectedLvl}
           setSolvedQuarter={setSolvedQuarter}
+          setStreak={setStreak}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -759,6 +768,7 @@ function LevelContent({
             setTimer={setTimer}
             caseDetails={caseDetails}
             setSelectedLvl={setSelectedLvl}
+            setStreak={setStreak}
           />
         </div>
       )}
@@ -959,6 +969,7 @@ function Submittion({
   setSubmitted,
   setTimer,
   setMistakes,
+  setStreak,
 }) {
   const totalTime = caseDetails.timeLimit;
 
@@ -969,6 +980,7 @@ function Submittion({
       setSubmitted(true);
       setMistakes((prev) => prev + 1);
       setTimer((prev) => prev - totalTime / 4); // reduce timer by 1/4
+      setStreak((prev) => ({ ...prev, currentStreak: 0 }));
     }
   }
   useEffect(() => {
@@ -1009,6 +1021,7 @@ function CorrectAnswering({
   solvedCasesContainer,
   setSelectedLvl,
   setSolvedQuarter,
+  setStreak,
 }) {
   function handleNextLevel() {
     setPlay((prev) => (questNumber !== nextLvlCheck.length ? prev + 1 : null)); // condition for last level
@@ -1095,9 +1108,25 @@ function CorrectAnswering({
   const questNumber = caseDetails.id; // 5
   const nextLvlCheck = levels[preventDup[caseDetails.difficulty]]; // 5;
 
-  console.log(nextLvlCheck);
-  console.log(questNumber);
-  console.log(caseDetails.number);
+  const ranEffect = useRef(false);
+  useEffect(() => {
+    if (ranEffect.current) return;
+    setStreak((prev) => ({
+      ...prev,
+      currentStreak: prev.currentStreak + 1,
+    }));
+
+    setStreak((prev) => ({
+      ...prev,
+      longestStreak:
+        prev.currentStreak > prev.longestStreak
+          ? prev.currentStreak
+          : prev.longestStreak,
+    }));
+
+    ranEffect.current = true;
+  }, [setStreak]);
+
   return (
     <div className="correct-overlay">
       <div className="corrected-section">
@@ -1162,6 +1191,7 @@ function TimeUp({
   setTimer,
   caseDetails,
   setSelectedLvl,
+  setStreak,
 }) {
   function handleToMainMenu() {
     setPlay(null);
@@ -1172,6 +1202,10 @@ function TimeUp({
   function handleTryAgain() {
     setTimer(caseDetails.timeLimit);
   }
+  useEffect(() => {
+    // directly reset, avoid refresh trick
+    setStreak((prev) => ({ ...prev, currentStreak: 0 }));
+  }, []);
   return (
     <div className="time-up-container">
       <div className="time-up-warning">
