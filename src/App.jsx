@@ -1320,6 +1320,20 @@ function HowToPlay({ howToPlayInfo, handleShowHowToPlay }) {
         <HelpRules howToPlayInfo={howToPlayInfo} />
         <HelpTimeRank howToPlayInfo={howToPlayInfo} />
         <HelpMedals howToPlayInfo={howToPlayInfo} />
+        <div className="pro-tip">
+          <div>
+            <div className="tip-icon">💡</div>
+            <div className="tip-content">
+              <div>PRO TIP</div>
+              <div>
+                {" "}
+                Use the <span>highlight tool</span> to mark suspicious parts of
+                the text. Wrong answers are designed to feel almost right —
+                always go back to the text before deciding.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1329,21 +1343,38 @@ function HelpRules({ howToPlayInfo }) {
     <div className="htp-rules">
       <div>
         <div className="the-rules-title">— THE RULES —</div>
-        {howToPlayInfo[0].map((rule) => {
-          return (
-            <div className="rule-container" key={rule.id}>
-              <div className="rule-id">
-                <div>{rule.id}</div>
-                <div>{rule.icon}</div>
-              </div>
+        <div className="rules-container">
+          {howToPlayInfo[0].map((rule) => {
+            return (
+              <div
+                className="rule-container"
+                key={rule.id}
+                style={{ borderLeft: `3px solid ${rule.color}` }}
+              >
+                <div className="rule-id">
+                  <div
+                    style={{
+                      filter: `drop-shadow(0 0 8px ${rule.color}55)`,
+                      color: rule.color,
+                    }}
+                  >
+                    {rule.id}
+                  </div>
+                  <div
+                    style={{ filter: `drop-shadow(0 0 8px ${rule.color}55)` }}
+                  >
+                    {rule.icon}
+                  </div>
+                </div>
 
-              <div className="rule-content">
-                <div className="rule-title">{rule.title}</div>
-                <div className="rule-desc">{rule.desc}</div>
+                <div className="rule-content">
+                  <div className="rule-title">{rule.title}</div>
+                  <div className="rule-desc">{rule.desc}</div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

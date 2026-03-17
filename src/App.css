@@ -2919,48 +2919,25 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
    RULES — left aligned, id top-left
 ══════════════════════════════════════════ */
 
-.htp-rules {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.the-rules-title,
-.the-time-title {
-  font-size: 9px;
-  color: #9d7fc4;
-  letter-spacing: 4px;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-  text-align: left;
-}
-
 .rule-container {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 16px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(139, 92, 246, 0.07);
   border-left: 3px solid rgba(139, 92, 246, 0.3);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   text-align: left;
-  transition: all 0.15s;
 }
 
-.rule-container:hover {
-  background: rgba(255, 255, 255, 0.035);
-  border-left-color: #a855f7;
-}
-
-/* id top-left + icon below it */
+/* id + icon side by side */
 .rule-id {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   flex-shrink: 0;
-  min-width: 32px;
 }
 
 .rule-id > div:first-child {
@@ -2968,20 +2945,18 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   color: #3a1a55;
   font-weight: 900;
   letter-spacing: 2px;
-  align-self: flex-start;
 }
 
 .rule-id > div:last-child {
-  font-size: 24px;
-  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.3));
+  font-size: 26px;
 }
 
-/* title above desc */
 .rule-content {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   align-items: flex-start;
+  text-align: left;
 }
 
 .rule-title {
@@ -2990,6 +2965,7 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   color: #e9d5ff;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-align: left;
 }
 
 .rule-desc {
@@ -2997,8 +2973,27 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   color: #7c5faa;
   line-height: 1.7;
   letter-spacing: 0.3px;
+  text-align: left;
+}
+.htp-rules {
+  display: flex;
+  flex-direction: column;
 }
 
+.the-rules-title {
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.rules-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 /* ══════════════════════════════════════════
    TIME RANKS — left aligned, proper bars
 ══════════════════════════════════════════ */
@@ -3009,7 +3004,13 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   gap: 0;
   text-align: left;
 }
-
+.the-time-title {
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
 .time-title-desc {
   font-size: 9px;
   color: #4c2d7a;
@@ -3153,6 +3154,50 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   color: #4c2d7a;
   letter-spacing: 1px;
   line-height: 1.6;
+}
+.pro-tip {
+  background: rgba(168, 85, 247, 0.05);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.pro-tip > div {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  gap: 14px;
+}
+
+.tip-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.4));
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tip-content > div:first-child {
+  font-size: 12px;
+  color: #b9b997;
+  letter-spacing: 3px;
+  align-items: flex-start;
+}
+
+.tip-content > div:last-child {
+  font-size: 11px;
+  color: #7c5faa;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
+}
+
+.tip-content span {
+  color: #c084fc;
+  font-weight: 700;
 }
 @keyframes popIn {
   0% {
