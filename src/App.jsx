@@ -114,6 +114,7 @@ function App() {
           levels={levels}
           setPlay={setPlay}
           solvedCasesContainer={solvedCasesContainer}
+          howToPlayInfo={howToPlayInfo}
         />
       )}
       {showProfile && (
@@ -168,10 +169,16 @@ function Main({
   levels,
   setPlay,
   solvedCasesContainer,
+  howToPlayInfo,
 }) {
   const [showLevels, setShowLevels] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+
   function handleShowLevels() {
     setShowLevels((prev) => !prev);
+  }
+  function handleShowHowToPlay() {
+    setShowHowToPlay((prev) => !prev);
   }
   return (
     <div className="container">
@@ -233,6 +240,15 @@ function Main({
               : "SELECT A DIFFICULTY"}
           </button>
         </div>
+        <button className="htp-button" onClick={handleShowHowToPlay}>
+          HOW TO PLAY
+        </button>
+        {showHowToPlay && (
+          <HowToPlay
+            howToPlayInfo={howToPlayInfo}
+            handleShowHowToPlay={handleShowHowToPlay}
+          />
+        )}
       </div>
     </div>
   );
@@ -1283,10 +1299,13 @@ function TimeUp({
   );
 }
 
-function HowToPlay({ howToPlayInfo }) {
+function HowToPlay({ howToPlayInfo, handleShowHowToPlay }) {
   return (
     <div className="how-to-play">
       <div className="how-to-play-header">
+        <button className="close-how-to-play" onClick={handleShowHowToPlay}>
+          ↩
+        </button>
         <div className="up-title">— INTELLIGENCE PUZZLE GAME —</div>
         <div className="htp-title">HOW TO PLAY</div>
         <div className="htp-subtitle">
@@ -1308,22 +1327,24 @@ function HowToPlay({ howToPlayInfo }) {
 function HelpRules({ howToPlayInfo }) {
   return (
     <div className="htp-rules">
-      <div className="the-rules-title">— THE RULES —</div>
-      {howToPlayInfo.rulesInfo.map((rule) => {
-        return (
-          <div className="rule-container">
-            <div className="rule-id">
-              <div>{rule.id}</div>
-              <div>{rule.icon}</div>
-            </div>
+      <div>
+        <div className="the-rules-title">— THE RULES —</div>
+        {howToPlayInfo[0].map((rule) => {
+          return (
+            <div className="rule-container" key={rule.id}>
+              <div className="rule-id">
+                <div>{rule.id}</div>
+                <div>{rule.icon}</div>
+              </div>
 
-            <div className="rule-content">
-              <div className="rule-title">{rule.title}</div>
-              <div className="rule-desc">{rule.desc}</div>
+              <div className="rule-content">
+                <div className="rule-title">{rule.title}</div>
+                <div className="rule-desc">{rule.desc}</div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -1331,21 +1352,31 @@ function HelpTimeRank({ howToPlayInfo }) {
   return (
     <div className="htp-time">
       <div className="the-time-title">— TIME RANKS —</div>
-      {howToPlayInfo.timeRankInfo.map((rank) => {
-        return (
-          <div className="rank-container">
-            <div className="rank-type">
-              <div>{rank.icon}</div>
-              <div>{rank.title}</div>
+      <div className="time-title-desc">
+        Your time limit is split into 4 quarters — the earlier you solve, the
+        better your rank
+      </div>
+      <div className="rank-wraper">
+        {howToPlayInfo[1].map((rank) => {
+          return (
+            <div className="rank-container" key={rank.icon}>
+              <div className="rank-type">
+                <div>{rank.icon}</div>
+                <div style={{ color: rank.color }}>{rank.rank}</div>
+              </div>
+              <div className="rank-right">
+                <div className="desc">{rank.desc}</div>
+                <div className="rank-bar-track">
+                  <div
+                    className="rank-bar"
+                    style={{ width: rank.bar, background: rank.color }}
+                  ></div>
+                </div>
+              </div>
             </div>
-            <div className="desc">{rank.desc}</div>
-            <div
-              className="rank-bar"
-              style={{ width: rank.bar, color: rank.color }}
-            ></div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -1353,17 +1384,19 @@ function HelpMedals({ howToPlayInfo }) {
   return (
     <div className="htp-medals">
       <div className="the-time-title">— MEDALS —</div>
-      {howToPlayInfo.medalsInfo.map((medal) => {
-        return (
-          <div className="medals-container">
-            <div className="medal-icon">{medal.icon}</div>
-            <div className="medal-label" style={{ color: medal.color }}>
-              {medal.label}
+      <div className="medal-separater">
+        {howToPlayInfo[2].map((medal) => {
+          return (
+            <div className="medals-container" key={medal.icon}>
+              <div className="medal-icon">{medal.icon}</div>
+              <div className="medal-label" style={{ color: medal.color }}>
+                {medal.label}
+              </div>
+              <div className="medal-desc">{medal.desc}</div>
             </div>
-            <div className="medal-desc">{medal.desc}</div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

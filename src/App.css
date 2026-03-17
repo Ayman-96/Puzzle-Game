@@ -2734,6 +2734,426 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   border-left-color: #ef4444 !important;
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.15) !important;
 }
+
+/* ══════════════════════════════════════════
+   HOW TO PLAY BUTTON
+══════════════════════════════════════════ */
+
+.htp-button {
+  background: transparent;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: #7c5faa;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: "Segoe UI", sans-serif;
+  transition: all 0.15s;
+}
+
+.htp-button:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #c084fc;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+/* ══════════════════════════════════════════
+   OVERLAY
+══════════════════════════════════════════ */
+
+.how-to-play {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ══════════════════════════════════════════
+   INNER CARD
+   (wraps header + comps together)
+══════════════════════════════════════════ */
+
+.how-to-play-header,
+.htp-comps {
+  background: #0e0b18;
+  width: 100%;
+  max-width: 560px;
+}
+
+.how-to-play-header {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  padding: 36px 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* top glow */
+.how-to-play-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(168, 85, 247, 0.6),
+    transparent
+  );
+}
+
+.htp-comps {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  padding: 0 32px 32px;
+  max-height: 55vh;
+  overflow-y: auto;
+  box-shadow: 0 0 80px rgba(139, 92, 246, 0.15);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 24px;
+}
+
+.htp-comps::-webkit-scrollbar {
+  width: 4px;
+}
+
+.htp-comps::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.htp-comps::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+}
+
+.htp-comps::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
+
+/* ══════════════════════════════════════════
+   CLOSE BUTTON
+══════════════════════════════════════════ */
+
+.close-how-to-play {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  color: #9d7fc4;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  transform: scaleX(-1);
+  z-index: 10;
+}
+
+.close-how-to-play:hover {
+  color: #21d211;
+  border-color: rgba(45, 142, 12, 0.4);
+}
+
+/* ══════════════════════════════════════════
+   HEADER CONTENT
+══════════════════════════════════════════ */
+
+.up-title {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 5px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.htp-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+
+.htp-subtitle {
+  font-size: 11px;
+  color: #4c2d7a;
+  letter-spacing: 1px;
+  line-height: 1.8;
+}
+
+/* ══════════════════════════════════════════
+   SECTION TITLES (shared across sub-comps)
+══════════════════════════════════════════ */
+
+.htp-section-title {
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+/* ══════════════════════════════════════════
+   RULES — left aligned, id top-left
+══════════════════════════════════════════ */
+
+.htp-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.the-rules-title,
+.the-time-title {
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.rule-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(139, 92, 246, 0.07);
+  border-left: 3px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.rule-container:hover {
+  background: rgba(255, 255, 255, 0.035);
+  border-left-color: #a855f7;
+}
+
+/* id top-left + icon below it */
+.rule-id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  min-width: 32px;
+}
+
+.rule-id > div:first-child {
+  font-size: 8px;
+  color: #3a1a55;
+  font-weight: 900;
+  letter-spacing: 2px;
+  align-self: flex-start;
+}
+
+.rule-id > div:last-child {
+  font-size: 24px;
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.3));
+}
+
+/* title above desc */
+.rule-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.rule-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #e9d5ff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rule-desc {
+  font-size: 11px;
+  color: #7c5faa;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
+}
+
+/* ══════════════════════════════════════════
+   TIME RANKS — left aligned, proper bars
+══════════════════════════════════════════ */
+
+.htp-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: left;
+}
+
+.time-title-desc {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 1px;
+  margin: -8px 0 16px;
+  line-height: 1.6;
+  text-align: left;
+}
+.rank-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(139, 92, 246, 0.07);
+  border-bottom: none;
+  border-top: none;
+  padding: 14px 18px;
+  height: 25px;
+}
+
+.rank-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.07);
+}
+
+.rank-container:last-child {
+  border-bottom: none;
+}
+.rank-container:first-of-type {
+  border-radius: 12px 12px 0 0;
+  border-top: 1px solid rgba(139, 92, 246, 0.07);
+}
+.rank-container:last-of-type {
+  border-radius: 0 0 12px 12px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.07);
+}
+
+.rank-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.rank-type > div:first-child {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.rank-type > div:last-child {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rank-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.rank-container .desc {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rank-bar-track {
+  width: 120px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.rank-bar {
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 100%;
+  border-radius: 4px;
+  opacity: 0.85;
+  transition: width 0.6s ease;
+}
+/* ══════════════════════════════════════════
+   MEDALS — stacked, left aligned
+══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MEDALS
+══════════════════════════════════════════ */
+
+.htp-medals {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: left;
+}
+
+.medal-separater {
+  display: flex;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(139, 92, 246, 0.07);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.medals-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border-right: 1px solid rgba(139, 92, 246, 0.07);
+  text-align: center;
+}
+
+.medals-container:last-child {
+  border-right: none;
+}
+
+.medal-icon {
+  font-size: 26px;
+}
+
+.medal-label {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.medal-desc {
+  font-size: 9px;
+  color: #4c2d7a;
+  letter-spacing: 1px;
+  line-height: 1.6;
+}
 @keyframes popIn {
   0% {
     transform: scale(1);
