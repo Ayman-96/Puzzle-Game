@@ -1567,13 +1567,27 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   justify-content: space-between;
 }
 
-#sniper {
+#sniper,
+#against-clock {
   font-size: 9px;
   color: #9d7fc4;
   letter-spacing: 3px;
   margin-bottom: 6px;
 }
-
+.time-out-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+#count-time-out {
+  font-size: 28px;
+  font-weight: 900;
+  color: #c52222;
+  align-self: flex-start;
+  justify-content: flex-start;
+  margin-left: 2px;
+}
 .first-try-detail > div:last-child {
   font-size: 28px;
   font-weight: 900;
@@ -1584,12 +1598,23 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 3px solid rgba(34, 197, 94, 0.3);
+  border: 3px solid rgba(20, 236, 99, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+}
+.time-out-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 8, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 20px rgba(197, 40, 34, 0.15);
 }
 
 /* ══════════════════════════════════════════

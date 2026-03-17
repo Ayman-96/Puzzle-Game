@@ -34,6 +34,8 @@ function App() {
     "mistakes",
   );
 
+  // Time Out
+  const [countTimeOut, setCountTimeOut] = useLocalStorageState(0, "timeOut");
   // TIME RANK
   const [solvedQuarter, setSolvedQuarter] = useLocalStorageState(
     {
@@ -125,6 +127,7 @@ function App() {
           numTry={numTry}
           solvedQuarter={solvedQuarter}
           streak={streak}
+          countTimeOut={countTimeOut}
         />
       )}
 
@@ -145,6 +148,7 @@ function App() {
           setSelectedLvl={setSelectedLvl}
           setSolvedQuarter={setSolvedQuarter}
           setStreak={setStreak}
+          setCountTimeOut={setCountTimeOut}
         />
       )}
     </div>
@@ -243,6 +247,7 @@ function UserProfile({
   numTry,
   solvedQuarter,
   streak,
+  countTimeOut,
 }) {
   return (
     <div className="profile-overlay">
@@ -263,6 +268,7 @@ function UserProfile({
             numTry={numTry}
             solvedCasesContainer={solvedCasesContainer}
           />
+          <PlayerTimeOut countTimeOut={countTimeOut} />
 
           <PlayerTimeRank
             solvedQuarter={solvedQuarter}
@@ -550,6 +556,20 @@ function PlayerStreak({ streak }) {
     </div>
   );
 }
+function PlayerTimeOut({ countTimeOut }) {
+  return (
+    <div>
+      <div className="first-try-title">— TIME OUTS —</div>
+      <div className="first-try">
+        <div className="time-out-detail">
+          <div id="against-clock">AGAINST THE CLOCK..!</div>
+          <div id="count-time-out">{countTimeOut}x</div>
+        </div>
+        <div className="time-out-icon">⏱️</div>
+      </div>
+    </div>
+  );
+}
 
 // LEVELS COMPONENTS
 function ShowDifficultyLevels({
@@ -695,6 +715,7 @@ function LevelContent({
   setSelectedLvl,
   setSolvedQuarter,
   setStreak,
+  setCountTimeOut,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -771,6 +792,7 @@ function LevelContent({
             caseDetails={caseDetails}
             setSelectedLvl={setSelectedLvl}
             setStreak={setStreak}
+            setCountTimeOut={setCountTimeOut}
           />
         </div>
       )}
@@ -1194,6 +1216,7 @@ function TimeUp({
   caseDetails,
   setSelectedLvl,
   setStreak,
+  setCountTimeOut,
 }) {
   function handleToMainMenu() {
     setPlay(null);
@@ -1204,9 +1227,14 @@ function TimeUp({
   function handleTryAgain() {
     setTimer(caseDetails.timeLimit);
   }
+  const ref = useRef(false);
   useEffect(() => {
+    if (ref.current) return;
     // directly reset, avoid refresh trick
     setStreak((prev) => ({ ...prev, currentStreak: 0 }));
+    setCountTimeOut((prev) => prev + 1);
+
+    ref.current = true;
   }, []);
   return (
     <div className="time-up-container">
