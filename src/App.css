@@ -1154,6 +1154,7 @@ body {
   box-shadow: 0 0 80px rgba(139, 92, 246, 0.15);
   max-height: 70vh;
   overflow-y: auto;
+  max-width: 580px;
   width: 90%;
 }
 .avatars-display::-webkit-scrollbar {
@@ -2385,45 +2386,36 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
   margin-bottom: 32px;
 }
 
-.first-cell-details,
-.second-cell-details,
-.third-cell-details {
+/* ── CELLS ── */
+.tries-number,
+.streak {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
 }
 
-.time-up-details > p,
-.first-cell-details p,
-.second-cell-details p,
-.third-cell-details p {
-  margin: 0;
-}
-
-.first-cell-details p:first-child,
-.second-cell-details p:first-child,
-.third-cell-details p:first-child,
+/* ── MIDDLE CELL (# Time Outs) with dividers ── */
 .time-up-details > p {
-  font-size: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
   color: #4c2d7a;
   letter-spacing: 3px;
   text-transform: uppercase;
-}
-
-.first-cell-details p:last-child,
-.second-cell-details p:last-child,
-.third-cell-details p:last-child {
-  font-size: 20px;
-  color: #a855f7;
-  font-weight: 800;
-}
-
-/* ── DIVIDERS between cells ── */
-.time-up-details > p {
   border-left: 1px solid rgba(139, 92, 246, 0.15);
   border-right: 1px solid rgba(139, 92, 246, 0.15);
   padding: 0 32px;
+  margin: 0;
+}
+
+/* ── TIME OUT VALUE ── */
+#time-out {
+  font-size: 22px;
+  color: #cb1515;
+  font-weight: 800;
 }
 
 /* ── BUTTONS ── */
@@ -2597,10 +2589,6 @@ button.each-level[aria-disabled="true"]:active #fa-lock {
 }
 
 .done-time {
-  border-right: 1px solid rgba(139, 92, 246, 0.1);
-}
-
-.tries-number {
   border-right: 1px solid rgba(139, 92, 246, 0.1);
 }
 

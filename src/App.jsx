@@ -149,6 +149,8 @@ function App() {
           setSolvedQuarter={setSolvedQuarter}
           setStreak={setStreak}
           setCountTimeOut={setCountTimeOut}
+          streak={streak}
+          countTimeOut={countTimeOut}
         />
       )}
     </div>
@@ -464,7 +466,7 @@ function PlayerAccuracy({ numTry }) {
       <div className="first-try">
         <div className="first-try-detail">
           <div id="sniper">SNIPER..!</div>
-          <div>{firstPerecntage}%</div>
+          <div>{firstPerecntage.toFixed(2)}%</div>
         </div>
         <div className="first-try-icon">🎯</div>
       </div>
@@ -716,6 +718,8 @@ function LevelContent({
   setSolvedQuarter,
   setStreak,
   setCountTimeOut,
+  streak,
+  countTimeOut,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -781,6 +785,7 @@ function LevelContent({
           setSelectedLvl={setSelectedLvl}
           setSolvedQuarter={setSolvedQuarter}
           setStreak={setStreak}
+          streak={streak}
         />
       )}
       {timer <= 0 && timer !== null && (
@@ -792,7 +797,10 @@ function LevelContent({
             caseDetails={caseDetails}
             setSelectedLvl={setSelectedLvl}
             setStreak={setStreak}
+            streak={streak}
             setCountTimeOut={setCountTimeOut}
+            mistakes={mistakes}
+            countTimeOut={countTimeOut}
           />
         </div>
       )}
@@ -1046,6 +1054,7 @@ function CorrectAnswering({
   setSelectedLvl,
   setSolvedQuarter,
   setStreak,
+  streak,
 }) {
   function handleNextLevel() {
     setPlay((prev) => (questNumber !== nextLvlCheck.length ? prev + 1 : null)); // condition for last level
@@ -1168,10 +1177,10 @@ function CorrectAnswering({
             TIME LEFT <span id="done-time">{timer + 1}s</span>
           </div>
           <div className="tries-number">
-            #TRIES <span id="tries-number">1</span>
+            #TRIES <span id="tries-number">{mistakes + 1}</span>
           </div>
           <div className="streak">
-            STREAK <span id="streak">x🔥</span>
+            STREAK <span id="streak">{streak.currentStreak}🔥</span>
           </div>
         </div>
         <div className="key-clue">
@@ -1216,7 +1225,10 @@ function TimeUp({
   caseDetails,
   setSelectedLvl,
   setStreak,
+  streak,
   setCountTimeOut,
+  mistakes,
+  countTimeOut,
 }) {
   function handleToMainMenu() {
     setPlay(null);
@@ -1248,13 +1260,14 @@ function TimeUp({
         <div className="separation">————————————————</div>
       </div>
       <div className="time-up-details">
-        <div className="first-cell-details">
-          <p>#Tries</p>
+        <div className="tries-number">
+          #TRIES <span id="tries-number">{mistakes}</span>
         </div>
-        <div className="second-cell-details"></div>
-        <p>Time Rank</p>
-        <div className="third-cell-details">
-          <p>Streak</p>
+        <p>
+          # Time Outs<span id="time-out">{countTimeOut}</span>
+        </p>
+        <div className="streak">
+          STREAK RESETED<span id="streak">{streak.currentStreak}🔥</span>
         </div>
       </div>
       <div className="next-step-buttons">
