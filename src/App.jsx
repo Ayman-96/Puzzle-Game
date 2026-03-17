@@ -5,7 +5,7 @@ import Highlighter from "react-highlight-words";
 import { useLocalStorageState } from "./localStorage";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
-
+import { howToPlayInfo } from "./how-to-play";
 function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [play, setPlay] = useState(null);
@@ -1282,4 +1282,22 @@ function TimeUp({
     </div>
   );
 }
+
+function HowToPlay({ howToPlayInfo }) {
+  return (
+    <div className="how-to-play">
+      <div className="how-to-play-header">
+        <div className="up-title">— INTELLIGENCE PUZZLE GAME —</div>
+        <div className="htp-title">HOW TO PLAY</div>
+        <div className="htp-subtitle">
+          {" "}
+          Read between the lines.
+          <br />
+          The truth is always in front of You.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default App;
