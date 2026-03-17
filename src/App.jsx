@@ -1296,8 +1296,75 @@ function HowToPlay({ howToPlayInfo }) {
           The truth is always in front of You.
         </div>
       </div>
+
+      <div className="htp-comps">
+        <HelpRules howToPlayInfo={howToPlayInfo} />
+        <HelpTimeRank howToPlayInfo={howToPlayInfo} />
+        <HelpMedals howToPlayInfo={howToPlayInfo} />
+      </div>
     </div>
   );
 }
+function HelpRules({ howToPlayInfo }) {
+  return (
+    <div className="htp-rules">
+      <div className="the-rules-title">— THE RULES —</div>
+      {howToPlayInfo.rulesInfo.map((rule) => {
+        return (
+          <div className="rule-container">
+            <div className="rule-id">
+              <div>{rule.id}</div>
+              <div>{rule.icon}</div>
+            </div>
 
+            <div className="rule-content">
+              <div className="rule-title">{rule.title}</div>
+              <div className="rule-desc">{rule.desc}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+function HelpTimeRank({ howToPlayInfo }) {
+  return (
+    <div className="htp-time">
+      <div className="the-time-title">— TIME RANKS —</div>
+      {howToPlayInfo.timeRankInfo.map((rank) => {
+        return (
+          <div className="rank-container">
+            <div className="rank-type">
+              <div>{rank.icon}</div>
+              <div>{rank.title}</div>
+            </div>
+            <div className="desc">{rank.desc}</div>
+            <div
+              className="rank-bar"
+              style={{ width: rank.bar, color: rank.color }}
+            ></div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+function HelpMedals({ howToPlayInfo }) {
+  return (
+    <div className="htp-medals">
+      <div className="the-time-title">— MEDALS —</div>
+      {howToPlayInfo.medalsInfo.map((medal) => {
+        return (
+          <div className="medals-container">
+            <div className="medal-icon">{medal.icon}</div>
+            <div className="medal-label" style={{ color: medal.color }}>
+              {medal.label}
+            </div>
+            <div className="medal-desc">{medal.desc}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 export default App;
