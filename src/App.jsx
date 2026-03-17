@@ -124,6 +124,7 @@ function App() {
           solvedCasesContainer={solvedCasesContainer}
           numTry={numTry}
           solvedQuarter={solvedQuarter}
+          streak={streak}
         />
       )}
 
@@ -241,6 +242,7 @@ function UserProfile({
   solvedCasesContainer,
   numTry,
   solvedQuarter,
+  streak,
 }) {
   return (
     <div className="profile-overlay">
@@ -267,7 +269,7 @@ function UserProfile({
             solvedCasesContainer={solvedCasesContainer}
           />
 
-          <PlayerStreak />
+          <PlayerStreak streak={streak} />
         </div>
       </div>
     </div>
@@ -529,19 +531,19 @@ function PlayerTimeRank({ solvedQuarter, solvedCasesContainer }) {
     </div>
   );
 }
-function PlayerStreak() {
+function PlayerStreak({ streak }) {
   return (
     <div className="streak-comp">
       <div className="steak-title">— STREAK RECORD —</div>
       <div className="player-streak">
         <div className="current-streak">
           <p>CURRENT STREAK</p>
-          <div>N🔥</div>
+          <div>{streak.currentStreak}🔥</div>
           <div id="in-a-row">cases in a row</div>
         </div>
         <div className="current-streak">
           <p>LONGEST STREAK</p>
-          <div>N⚡</div>
+          <div>{streak.longestStreak}⚡</div>
           <div id="best-time">all time best</div>
         </div>
       </div>
