@@ -847,3 +847,11 @@ export const avatars = [
   "/avatars/walter-white-avatar.jpg",
   "/avatars/zoro-avatar.png",
 ];
+
+export const logos = [
+  "/account-logo/github.png",
+  "/account-logo/facebook.png",
+
+  "/account-logo/instagram.png",
+  "/account-logo/telegram.png",
+];

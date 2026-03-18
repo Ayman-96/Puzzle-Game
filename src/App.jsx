@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import { levels, avatars } from "./data";
+import { levels, avatars, logos } from "./data";
 import Highlighter from "react-highlight-words";
 import { useLocalStorageState } from "./localStorage";
 import { FaLock, FaLockOpen } from "react-icons/fa";
@@ -115,6 +115,7 @@ function App() {
           setPlay={setPlay}
           solvedCasesContainer={solvedCasesContainer}
           howToPlayInfo={howToPlayInfo}
+          logos={logos}
         />
       )}
       {showProfile && (
@@ -170,15 +171,19 @@ function Main({
   setPlay,
   solvedCasesContainer,
   howToPlayInfo,
+  logos,
 }) {
   const [showLevels, setShowLevels] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
-
+  const [showAbout, setShowAbout] = useState(false);
   function handleShowLevels() {
     setShowLevels((prev) => !prev);
   }
   function handleShowHowToPlay() {
     setShowHowToPlay((prev) => !prev);
+  }
+  function handleShowAbout() {
+    setShowAbout((prev) => !prev);
   }
   return (
     <div className="container">
@@ -240,6 +245,7 @@ function Main({
               : "SELECT A DIFFICULTY"}
           </button>
         </div>
+
         <button className="htp-button" onClick={handleShowHowToPlay}>
           HOW TO PLAY
         </button>
@@ -248,6 +254,13 @@ function Main({
             howToPlayInfo={howToPlayInfo}
             handleShowHowToPlay={handleShowHowToPlay}
           />
+        )}
+
+        <button className="about-btn" onClick={handleShowAbout}>
+          About ⓘ
+        </button>
+        {showAbout && (
+          <AboutDev logos={logos} handleShowAbout={handleShowAbout} />
         )}
       </div>
     </div>
@@ -1427,6 +1440,121 @@ function HelpMedals({ howToPlayInfo }) {
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+function AboutDev({ logos, handleShowAbout }) {
+  const badges = ["contradication", "investigation", "CODED", "IMPOSTER"];
+  const Accounts = [
+    {
+      socialMedia: "GITHUB",
+      name: "Ayman-96",
+      ref: "https://github.com/Ayman-96",
+      img: logos[0],
+      color: "#e7e2e2",
+    },
+    {
+      socialMedia: "FACEBOOK",
+      name: "Aeman",
+      ref: "https://www.facebook.com/share/18E2kL3sz3/",
+      img: logos[1],
+      color: "rgba(10, 103, 216, 0.67)",
+    },
+    {
+      socialMedia: "INSTAGRAM",
+      name: "@Aeman_a96",
+      ref: "https://www.instagram.com/aeman_a96?igsh=eWFuZWN0Nm0xNm9v",
+      img: logos[2],
+      color: "rgb(182, 13, 128)",
+    },
+    {
+      socialMedia: "TELEGRAM",
+      name: "@Aeman9_6",
+      ref: "https://www.instagram.com/aeman_a96?igsh=eWFuZWN0Nm0xNm9v",
+      img: logos[3],
+      color: "rgb(11, 165, 171)",
+    },
+  ];
+  const techonologies = ["React", "Vite", "CSS", "LocalStorage"];
+  return (
+    <div className="about">
+      <div>
+        <button className="close-about" onClick={handleShowAbout}>
+          ↩
+        </button>
+
+        <div className="game-details">
+          <div className="about-game">— ABOUT THE GAME —</div>
+          <div className="about-game-desc">
+            <div className="about-title">BETWEEN THE LINES</div>
+            <div className="about-desc">
+              A text-based intelligence puzzle game. Every case is a realistic
+              document — an email, a witness statement, a report. Someone is
+              always lying. Your job is to read carefully, spot the
+              contradiction, and find the truth hidden between the lines.
+            </div>
+            <div className="about-badges">
+              {badges.map((badge) => (
+                <span key={badge}>{badge}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <span id="br">────────────────────────</span>
+
+        <div className="dev-details">
+          <div className="developer">— THE DEVELOPER —</div>
+          <div className="dev-info">
+            <div>👨‍💻</div>
+            <div className="dev-detail">
+              <div className="dev-name">Ayman</div>
+              <div className="dev-speciality">
+                Frontend Developer · React Learner
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="acc-details">
+          <div className="finde-me">— FIND ME —</div>
+          <div className="accounts">
+            {Accounts.map((acc) => {
+              return (
+                <div className="acc-info" key={acc.name}>
+                  <img
+                    src={acc.img}
+                    alt={acc.socialMedia.toLowerCase()}
+                    color="red"
+                    style={{
+                      filter: `brightness(0) invert(0.8) drop-shadow(0 0 8px ${acc.color})`,
+                    }}
+                  />
+                  <div>
+                    <div className="social-media">{acc.socialMedia}</div>
+
+                    <a
+                      href={acc.ref}
+                      className="-name"
+                      style={{ color: acc.color }}
+                    >
+                      {acc.name}
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="techonology-details">
+          <div className="techno">
+            {techonologies.map((tech, i) => (
+              <span key={i}>{tech}</span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
