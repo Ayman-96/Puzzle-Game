@@ -156,30 +156,30 @@ function App() {
 }
 
 function Main({
+  logos,
+  levels,
+  diffLabel,
+  difficulty,
+  howToPlayInfo,
+  solvedCasesContainer,
+  setPlay,
+  selectedLvl,
   setDifficulty,
   setShowProfile,
   selectedAvatar,
   setSelectedLvl,
-  selectedLvl,
-  diffLabel,
-  difficulty,
-  levels,
-  setPlay,
-  solvedCasesContainer,
-  howToPlayInfo,
-  logos,
 }) {
+  const [showAbout, setShowAbout] = useState(false);
   const [showLevels, setShowLevels] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
+  function handleShowAbout() {
+    setShowAbout((prev) => !prev);
+  }
   function handleShowLevels() {
     setShowLevels((prev) => !prev);
   }
   function handleShowHowToPlay() {
     setShowHowToPlay((prev) => !prev);
-  }
-  function handleShowAbout() {
-    setShowAbout((prev) => !prev);
   }
   return (
     <div className="container">
@@ -212,19 +212,19 @@ function Main({
               <span className={`${selectedLvl && selectedLvl}`}> Difficulty{" "}</span>:</p>
 
             <ShowDifficultyLevels
+              levels={levels}
+              diffLabel={diffLabel}
+              difficulty={difficulty}
               setDifficulty={setDifficulty}
               setSelectedLvl={setSelectedLvl}
-              difficulty={difficulty}
-              diffLabel={diffLabel}
-              levels={levels}
             />
           </div>
 
           {showLevels && (
             <Levels
               difficulty={difficulty}
-              setPlay={setPlay}
               selectedLvl={selectedLvl}
+              setPlay={setPlay}
               handleShowLevels={handleShowLevels}
               solvedCasesContainer={solvedCasesContainer}
             />
