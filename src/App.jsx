@@ -1,29 +1,21 @@
-import { useState, useEffect, useRef } from "react";
 import "./App.css";
+import { howToPlayInfo } from "./how-to-play";
 import { levels, avatars, logos } from "./data";
 import Highlighter from "react-highlight-words";
-import { useLocalStorageState } from "./localStorage";
-import { FaLock, FaLockOpen } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
-import { howToPlayInfo } from "./how-to-play";
-function App() {
-  const [difficulty, setDifficulty] = useState(null);
-  const [play, setPlay] = useState(null);
-  const [selectedLvl, setSelectedLvl] = useState(null);
+import { FaLock, FaLockOpen } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { useLocalStorageState } from "./localStorage";
 
+function App() {
+  const [play, setPlay] = useState(null);
   const [timer, setTimer] = useState(null); // For inGaame Timer
-  const [showProfile, setShowProfile] = useState(false);
-  //
-  const [easySolved, setEasySolved] = useLocalStorageState([], "easyCases");
-  const [mediumSolved, setMediumSolved] = useLocalStorageState(
-    [],
-    "mediumCases",
-  );
-  const [hardSolved, setHardSolved] = useLocalStorageState([], "hardCases");
-  const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
-  //
-  // #TRY TO SOLVE
   const [mistakes, setMistakes] = useState(0);
+  const [difficulty, setDifficulty] = useState(null);
+  const [selectedLvl, setSelectedLvl] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
+  const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
+
   const [numTry, setNumTry] = useLocalStorageState(
     {
       first: 0,
@@ -33,10 +25,18 @@ function App() {
     },
     "mistakes",
   );
+  const [streak, setStreak] = useLocalStorageState(
+    { currentStreak: 0, longestStreak: 0 },
+    "streak",
+  );
+  const [easySolved, setEasySolved] = useLocalStorageState([], "easyCases");
+  const [mediumSolved, setMediumSolved] = useLocalStorageState(
+    [],
+    "mediumCases",
+  );
+  const [hardSolved, setHardSolved] = useLocalStorageState([], "hardCases");
 
-  // Time Out
   const [countTimeOut, setCountTimeOut] = useLocalStorageState(0, "timeOut");
-  // TIME RANK
   const [solvedQuarter, setSolvedQuarter] = useLocalStorageState(
     {
       first: 0,
@@ -46,15 +46,11 @@ function App() {
     },
     "solvedQuarters",
   );
-  // Streak
-  const [streak, setStreak] = useLocalStorageState(
-    { currentStreak: 0, longestStreak: 0 },
-    "streak",
-  );
   const [selectedAvatar, setSelectedAvatar] = useLocalStorageState(
     avatars[0],
     "avatars",
   );
+
   // DATE JOINED STORAGE
   const dateJoined = localStorage.getItem("dateJoined");
   const date = new Date().toLocaleDateString("en-US", {
@@ -104,55 +100,55 @@ function App() {
     <div>
       {!play && !showProfile && (
         <Main
+          logos={logos}
+          levels={levels}
+          diffLabel={diffLabel}
+          difficulty={difficulty}
+          howToPlayInfo={howToPlayInfo}
+          solvedCasesContainer={solvedCasesContainer}
+          setPlay={setPlay}
+          selectedLvl={selectedLvl}
           setDifficulty={setDifficulty}
           setShowProfile={setShowProfile}
           selectedAvatar={selectedAvatar}
           setSelectedLvl={setSelectedLvl}
-          selectedLvl={selectedLvl}
-          diffLabel={diffLabel}
-          difficulty={difficulty}
-          levels={levels}
-          setPlay={setPlay}
-          solvedCasesContainer={solvedCasesContainer}
-          howToPlayInfo={howToPlayInfo}
-          logos={logos}
         />
       )}
       {showProfile && (
         <UserProfile
+          levels={levels}
+          numTry={numTry}
+          streak={streak}
+          dateJoined={dateJoined}
+          countTimeOut={countTimeOut}
+          solvedQuarter={solvedQuarter}
+          solvedCasesContainer={solvedCasesContainer}
           setShowProfile={setShowProfile}
           selectedAvatar={selectedAvatar}
           setSelectedAvatar={setSelectedAvatar}
-          dateJoined={dateJoined}
-          levels={levels}
-          solvedCasesContainer={solvedCasesContainer}
-          numTry={numTry}
-          solvedQuarter={solvedQuarter}
-          streak={streak}
-          countTimeOut={countTimeOut}
         />
       )}
 
       {difficulty && play && (
         <LevelContent
-          caseDetails={caseDetails}
-          setTimer={setTimer}
           timer={timer}
-          setMistakes={setMistakes} //Drop-Drill
+          streak={streak}
           mistakes={mistakes}
+          caseDetails={caseDetails}
+          countTimeOut={countTimeOut}
+          solvedCasesContainer={solvedCasesContainer}
           setPlay={setPlay} //Drop-Drill
+          setTimer={setTimer}
+          setStreak={setStreak}
+          setNumTry={setNumTry}
+          setMistakes={setMistakes} //Drop-Drill
           setDifficulty={setDifficulty} // drop-drill
           setEasySolved={setEasySolved}
-          setMediumSolved={setMediumSolved}
           setHardSolved={setHardSolved}
-          setNumTry={setNumTry}
-          solvedCasesContainer={solvedCasesContainer}
           setSelectedLvl={setSelectedLvl}
-          setSolvedQuarter={setSolvedQuarter}
-          setStreak={setStreak}
+          setMediumSolved={setMediumSolved}
           setCountTimeOut={setCountTimeOut}
-          streak={streak}
-          countTimeOut={countTimeOut}
+          setSolvedQuarter={setSolvedQuarter}
         />
       )}
     </div>
