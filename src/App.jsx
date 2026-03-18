@@ -730,24 +730,24 @@ function Levels({
 
 // PLAY-SCREEN
 function LevelContent({
-  caseDetails,
-  setTimer,
   timer,
-  setMistakes,
+  streak,
+  setTimer,
   mistakes,
+  caseDetails,
+  setMistakes,
+  countTimeOut,
+  solvedCasesContainer,
   setPlay,
+  setStreak,
+  setNumTry,
   setDifficulty,
   setEasySolved,
-  setMediumSolved,
   setHardSolved,
-  setNumTry,
-  solvedCasesContainer,
   setSelectedLvl,
-  setSolvedQuarter,
-  setStreak,
+  setMediumSolved,
   setCountTimeOut,
-  streak,
-  countTimeOut,
+  setSolvedQuarter,
 }) {
   const [userAns, setUserAns] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -768,67 +768,67 @@ function LevelContent({
   return (
     <div className="play-content">
       <LevelInfo
-        caseDetails={caseDetails}
         timer={timer}
         percentage={percentage}
+        caseDetails={caseDetails}
       />
 
       <CaseContent caseDetails={caseDetails} />
 
       <QuestionSection caseDetails={caseDetails} />
       <AnswerSection
-        caseDetails={caseDetails}
         userAns={userAns}
-        setUserAns={setUserAns}
+        caseDetails={caseDetails}
         submitted={submitted}
+        setUserAns={setUserAns}
       />
 
       {timer > 0 && userAns && (
         <Submittion
-          submitted={submitted}
           userAns={userAns}
+          submitted={submitted}
           caseDetails={caseDetails}
-          setSubmitted={setSubmitted}
           setTimer={setTimer}
-          setMistakes={setMistakes}
           setStreak={setStreak}
+          setMistakes={setMistakes}
+          setSubmitted={setSubmitted}
         />
       )}
 
       {submitted && userAns === caseDetails.solution && (
         <CorrectAnswering
-          caseDetails={caseDetails}
-          setPlay={setPlay}
-          setDifficulty={setDifficulty}
-          setSubmitted={setSubmitted}
-          setUserAns={setUserAns}
           timer={timer}
-          setEasySolved={setEasySolved}
-          setMediumSolved={setMediumSolved}
-          setHardSolved={setHardSolved}
-          setMistakes={setMistakes}
+          streak={streak}
           mistakes={mistakes}
           setNumTry={setNumTry}
+          caseDetails={caseDetails}
           solvedCasesContainer={solvedCasesContainer}
-          setSelectedLvl={setSelectedLvl}
-          setSolvedQuarter={setSolvedQuarter}
+          setPlay={setPlay}
           setStreak={setStreak}
-          streak={streak}
+          setUserAns={setUserAns}
+          setMistakes={setMistakes}
+          setSubmitted={setSubmitted}
+          setDifficulty={setDifficulty}
+          setEasySolved={setEasySolved}
+          setHardSolved={setHardSolved}
+          setSelectedLvl={setSelectedLvl}
+          setMediumSolved={setMediumSolved}
+          setSolvedQuarter={setSolvedQuarter}
         />
       )}
       {timer <= 0 && timer !== null && (
         <div className="time-up-overlay">
           <TimeUp
-            setPlay={setPlay}
-            setDifficulty={setDifficulty}
-            setTimer={setTimer}
-            caseDetails={caseDetails}
-            setSelectedLvl={setSelectedLvl}
-            setStreak={setStreak}
             streak={streak}
-            setCountTimeOut={setCountTimeOut}
             mistakes={mistakes}
+            caseDetails={caseDetails}
             countTimeOut={countTimeOut}
+            setPlay={setPlay}
+            setTimer={setTimer}
+            setStreak={setStreak}
+            setDifficulty={setDifficulty}
+            setSelectedLvl={setSelectedLvl}
+            setCountTimeOut={setCountTimeOut}
           />
         </div>
       )}
