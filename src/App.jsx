@@ -601,11 +601,11 @@ function PlayerTimeOut({ countTimeOut }) {
 
 // LEVELS COMPONENTS
 function ShowDifficultyLevels({
+  levels,
+  diffLabel,
+  difficulty,
   setDifficulty,
   setSelectedLvl,
-  difficulty,
-  diffLabel,
-  levels,
 }) {
   function handleSetDifficulty(level) {
     setDifficulty(level);
@@ -651,10 +651,10 @@ function ShowDifficultyLevels({
 }
 function Levels({
   difficulty,
-  setPlay,
-  selectedLvl,
   handleShowLevels,
   solvedCasesContainer,
+  setPlay,
+  selectedLvl,
 }) {
   function handleShowContent(id) {
     setPlay(id);
@@ -699,10 +699,12 @@ function Levels({
                 <div className="lvl-id">#{lvl.number}</div>
                 <div className="lvl-icon">{lvl.emoji}</div>
               </div>
+
               <div>
                 <div className="lvl-title">{lvl.title}</div>
                 <div className="lvl-category">{lvl.category}</div>
               </div>
+
               <div>
                 <div>
                   <div className="case-availability">
