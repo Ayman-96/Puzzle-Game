@@ -14,7 +14,6 @@ function App() {
   const [difficulty, setDifficulty] = useState(null);
   const [selectedLvl, setSelectedLvl] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
-  const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
 
   const [numTry, setNumTry] = useLocalStorageState(
     {
@@ -35,6 +34,7 @@ function App() {
     "mediumCases",
   );
   const [hardSolved, setHardSolved] = useLocalStorageState([], "hardCases");
+  const solvedCasesContainer = [easySolved, mediumSolved, hardSolved];
 
   const [countTimeOut, setCountTimeOut] = useLocalStorageState(0, "timeOut");
   const [solvedQuarter, setSolvedQuarter] = useLocalStorageState(
@@ -545,13 +545,13 @@ function PlayerTimeRank({ solvedQuarter, solvedCasesContainer }) {
         {timeRank.map((rank, i) => {
           return (
             <div className="timer-deal" key={i}>
-              <div className="rank-icon">{rank.icon}</div>
-              <div className="rank-rank">{rank.rank}</div>
-              <div className="rank-quarter">{rank.quarterDetail}</div>
-              <div className="rank-amount">{rank.amount}</div>
-              <div className="rank-bar-track">
+              <div className="player-rank-icon">{rank.icon}</div>
+              <div className="player-rank-rank">{rank.rank}</div>
+              <div className="player-rank-quarter">{rank.quarterDetail}</div>
+              <div className="player-rank-amount">{rank.amount}</div>
+              <div className="player-rank-bar-track">
                 <div
-                  className="rank-bar"
+                  className="player-rank-bar"
                   style={{
                     width: `${(rank.amount / solvedLength) * 100}%`,
                     background: rank.color,
@@ -826,6 +826,7 @@ function LevelContent({
             setPlay={setPlay}
             setTimer={setTimer}
             setStreak={setStreak}
+            setMistakes={setMistakes}
             setDifficulty={setDifficulty}
             setSelectedLvl={setSelectedLvl}
             setCountTimeOut={setCountTimeOut}
@@ -1250,6 +1251,7 @@ function TimeUp({
   setPlay,
   setTimer,
   setStreak,
+  setMistakes,
   setDifficulty,
   setSelectedLvl,
   setCountTimeOut,
@@ -1261,6 +1263,7 @@ function TimeUp({
     setDifficulty(null);
     setTimer(null);
     setSelectedLvl(null);
+    setMistakes(0);
   }
   function handleTryAgain() {
     setTimer(caseDetails.timeLimit);

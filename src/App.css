@@ -298,6 +298,66 @@ body {
   text-decoration-color: rgb(123, 0, 255);
 }
 
+.player-time-rank {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(139, 92, 246, 0.08);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timer-deal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.player-rank-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.player-rank-rank {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #c084fc;
+  width: 64px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.player-rank-quarter {
+  font-size: 9px;
+  color: #9d7fc4;
+  letter-spacing: 1px;
+  flex: 1;
+}
+
+.player-rank-amount {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.player-rank-bar-track {
+  width: 100%;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.player-rank-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+  opacity: 0.85;
+}
 /* ══════════════════════════════════════════
    BODY
 ══════════════════════════════════════════ */
