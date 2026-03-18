@@ -395,7 +395,9 @@ function PlayerDetails({
             value={userName}
           />
           <div className="change-username-icon">✎</div>
-          <button className="player-badge">Investigator</button>
+          <button className="player-badge" title="Soon...">
+            Investigator
+          </button>
           <p className="enter-date">Joined {dateJoined}</p>
         </div>
       </div>
