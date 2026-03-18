@@ -874,7 +874,7 @@ function LevelInfo({ caseDetails, timer, percentage }) {
     </div>
   );
 }
-function HighlightOtions({ handleHighlightColor, bgColor }) {
+function HighlightOtions({ bgColor, handleHighlightColor }) {
   const colors = [
     { clr: "#eff755", txt: "black", clrNme: "Yellow" },
     { clr: "pink", txt: "black", clrNme: "Pink" },
@@ -902,10 +902,10 @@ function HighlightOtions({ handleHighlightColor, bgColor }) {
   );
 }
 function CaseContent({ caseDetails }) {
-  const [highlights, setHighlight] = useState([]);
-  const [bgColor, setBgColor] = useState();
   const [color, setColor] = useState();
+  const [bgColor, setBgColor] = useState();
   const [colorName, setColorName] = useState("");
+  const [highlights, setHighlight] = useState([]);
   const [boldText, setBoldText] = useState("normal");
 
   useEffect(() => {
@@ -921,6 +921,14 @@ function CaseContent({ caseDetails }) {
     };
   }, []);
 
+  function fontWeight() {
+    boldText === "normal" ? setBoldText("bold") : setBoldText("normal");
+  }
+  const handleHighlight = () => {
+    let selected = window.getSelection().toString().trim();
+    if (selected && (bgColor || boldText === "bold"))
+      setHighlight((prev) => [...prev, selected]);
+  };
   function handleHighlightColor(backgroundColor, textColor, colorName) {
     if (bgColor === backgroundColor && color === textColor) {
       setBgColor("");
@@ -933,15 +941,6 @@ function CaseContent({ caseDetails }) {
     }
   }
 
-  function fontWeight() {
-    boldText === "normal" ? setBoldText("bold") : setBoldText("normal");
-  }
-
-  const handleHighlight = () => {
-    let selected = window.getSelection().toString().trim();
-    if (selected && (bgColor || boldText === "bold"))
-      setHighlight((prev) => [...prev, selected]);
-  };
   return (
     <div className="case-container">
       <div className="case-container-header">
@@ -992,7 +991,7 @@ function QuestionSection({ caseDetails }) {
     </div>
   );
 }
-function AnswerSection({ caseDetails, userAns, setUserAns, submitted }) {
+function AnswerSection({ userAns, submitted, caseDetails, setUserAns }) {
   function handleUserAnswer(userAnswer) {
     setUserAns(userAnswer);
   }
@@ -1011,27 +1010,27 @@ function AnswerSection({ caseDetails, userAns, setUserAns, submitted }) {
           </button>
         );
       })}
-
-      {/* {submitted && (
-        <p
-          className={`explanation ${userAns === caseDetails.solution ? "correct-exp" : "wrong-exp"}`}
-        >
-          {caseDetails.explanation}
-        </p>
-      )} */}
     </div>
   );
 }
 function Submittion({
-  submitted,
   userAns,
+  submitted,
   caseDetails,
-  setSubmitted,
   setTimer,
-  setMistakes,
   setStreak,
+  setMistakes,
+  setSubmitted,
 }) {
   const totalTime = caseDetails.timeLimit;
+
+  useEffect(() => {
+    if (submitted && userAns !== caseDetails.solution) {
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 1000);
+    }
+  }, [submitted, userAns, caseDetails, setSubmitted]);
 
   function handleCheckAnswer() {
     if (userAns === caseDetails.solution) {
@@ -1043,13 +1042,6 @@ function Submittion({
       setStreak((prev) => ({ ...prev, currentStreak: 0 }));
     }
   }
-  useEffect(() => {
-    if (submitted && userAns !== caseDetails.solution) {
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 1000);
-    }
-  }, [submitted, userAns, caseDetails.solution, setSubmitted]);
   return (
     <div>
       <button
@@ -1066,24 +1058,46 @@ function Submittion({
   );
 }
 function CorrectAnswering({
-  caseDetails,
-  setPlay,
-  setDifficulty,
-  setSubmitted,
-  setUserAns,
   timer,
-  setEasySolved,
-  setMediumSolved,
-  setHardSolved,
-  setMistakes,
+  streak,
   mistakes,
   setNumTry,
+  caseDetails,
   solvedCasesContainer,
-  setSelectedLvl,
-  setSolvedQuarter,
+  setPlay,
   setStreak,
-  streak,
+  setUserAns,
+  setMistakes,
+  setSubmitted,
+  setDifficulty,
+  setEasySolved,
+  setHardSolved,
+  setSelectedLvl,
+  setMediumSolved,
+  setSolvedQuarter,
 }) {
+  const countSolvedRef = useRef(false);
+  const countTryRef = useRef(false);
+  const quarterTimeRef = useRef(false);
+  const countStreakRef = useRef(false);
+  const preventDup = {
+    easy: 0,
+    medium: 1,
+    hard: 2,
+  };
+  const countTry = {
+    // also an array is possible [0] = first
+    0: "first",
+    1: "second",
+    2: "third",
+    3: "last",
+  };
+
+  const totalTime = caseDetails.timeLimit; // 100
+  const quarterAmount = totalTime / 4; //25
+  const questNumber = caseDetails.id; // 5
+  const nextLvlCheck = levels[preventDup[caseDetails.difficulty]]; // 5;
+
   function handleNextLevel() {
     setPlay((prev) => (questNumber !== nextLvlCheck.length ? prev + 1 : null)); // condition for last level
     setSubmitted(false);
@@ -1096,11 +1110,10 @@ function CorrectAnswering({
     setSelectedLvl(null);
     setMistakes(0);
   }
-  // (Achivments) Count Level as Solved
-  const ran = useRef(false);
 
+  // (Achivments) Count Level as Solved
   useEffect(() => {
-    if (ran.current) return; // to prevent second render (strict mode)
+    if (countSolvedRef.current) return; // to prevent second render (strict mode)
 
     const setters = {
       easy: setEasySolved,
@@ -1112,24 +1125,12 @@ function CorrectAnswering({
     setSolved((prev) =>
       prev.includes(caseDetails.number) ? prev : [...prev, caseDetails.number],
     );
-    ran.current = true;
+    countSolvedRef.current = true;
   }, []);
 
-  const ref = useRef(false);
-  const preventDup = {
-    easy: 0,
-    medium: 1,
-    hard: 2,
-  };
-  const setTry = {
-    // also an array is possible [0] = first
-    0: "first",
-    1: "second",
-    2: "third",
-    3: "last",
-  };
+  // Count tries ( mistakes )
   useEffect(() => {
-    if (ref.current) return;
+    if (countTryRef.current) return;
 
     if (
       // prevent solved cases to count
@@ -1137,19 +1138,16 @@ function CorrectAnswering({
         caseDetails.number,
       )
     ) {
-      const select = setTry[mistakes];
+      const select = countTry[mistakes];
       setNumTry((prev) => ({ ...prev, [select]: prev[select] + 1 })); // [] = Use the value inside the variable as the key
     }
 
-    ref.current = true;
+    countTryRef.current = true;
   }, []);
 
-  const totalTime = caseDetails.timeLimit; // 100
-  const quarterAmount = totalTime / 4; //25
-  const ren = useRef(false);
-
+  // Quarter time solved in
   useEffect(() => {
-    if (ren.current) return;
+    if (quarterTimeRef.current) return;
     if (
       // prevent solved cases to count
       !solvedCasesContainer[preventDup[caseDetails.difficulty]].includes(
@@ -1164,14 +1162,12 @@ function CorrectAnswering({
         setSolvedQuarter((prev) => ({ ...prev, third: prev.third + 1 }));
       else setSolvedQuarter((prev) => ({ ...prev, fourth: prev.fourth + 1 }));
     }
-    ren.current = true;
+    quarterTimeRef.current = true;
   }, []);
-  const questNumber = caseDetails.id; // 5
-  const nextLvlCheck = levels[preventDup[caseDetails.difficulty]]; // 5;
 
-  const ranEffect = useRef(false);
+  // Count Streak
   useEffect(() => {
-    if (ranEffect.current) return;
+    if (countStreakRef.current) return;
     setStreak((prev) => ({
       ...prev,
       currentStreak: prev.currentStreak + 1,
@@ -1185,7 +1181,7 @@ function CorrectAnswering({
           : prev.longestStreak,
     }));
 
-    ranEffect.current = true;
+    countStreakRef.current = true;
   }, [setStreak]);
 
   return (
@@ -1247,17 +1243,19 @@ function CorrectAnswering({
   );
 }
 function TimeUp({
-  setPlay,
-  setDifficulty,
-  setTimer,
-  caseDetails,
-  setSelectedLvl,
-  setStreak,
   streak,
-  setCountTimeOut,
   mistakes,
+  caseDetails,
   countTimeOut,
+  setPlay,
+  setTimer,
+  setStreak,
+  setDifficulty,
+  setSelectedLvl,
+  setCountTimeOut,
 }) {
+  const ref = useRef(false);
+
   function handleToMainMenu() {
     setPlay(null);
     setDifficulty(null);
@@ -1267,7 +1265,8 @@ function TimeUp({
   function handleTryAgain() {
     setTimer(caseDetails.timeLimit);
   }
-  const ref = useRef(false);
+
+  //Reset Streak, Increment TimeOut
   useEffect(() => {
     if (ref.current) return;
     // directly reset, avoid refresh trick
@@ -1276,6 +1275,7 @@ function TimeUp({
 
     ref.current = true;
   }, []);
+
   return (
     <div className="time-up-container">
       <div className="time-up-warning">
