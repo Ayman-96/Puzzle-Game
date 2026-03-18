@@ -265,25 +265,25 @@ function Main({
 
 // USER PROFILE COMPONENTS
 function UserProfile({
-  setShowProfile,
-  selectedAvatar,
-  setSelectedAvatar,
-  dateJoined,
   levels,
-  solvedCasesContainer,
   numTry,
-  solvedQuarter,
   streak,
+  dateJoined,
   countTimeOut,
+  solvedQuarter,
+  selectedAvatar,
+  solvedCasesContainer,
+  setShowProfile,
+  setSelectedAvatar,
 }) {
   return (
     <div className="profile-overlay">
       <div className="profile-card">
         <PlayerDetails
-          setShowProfile={setShowProfile}
-          selectedAvatar={selectedAvatar}
-          setSelectedAvatar={setSelectedAvatar}
           dateJoined={dateJoined}
+          selectedAvatar={selectedAvatar}
+          setShowProfile={setShowProfile}
+          setSelectedAvatar={setSelectedAvatar}
         />
         <div className="player-performance">
           <PlayerCasesSolved
@@ -327,8 +327,8 @@ function Avatars({
               key={index}
               className="provided-avatar"
               onClick={() => {
-                setSelectedAvatar(img);
                 handleShowAvatars();
+                setSelectedAvatar(img);
                 setChangedAvatarMessage(true);
                 setTimeout(() => setChangedAvatarMessage(false), 5000);
               }}
@@ -340,10 +340,10 @@ function Avatars({
   );
 }
 function PlayerDetails({
+  dateJoined,
   setShowProfile,
   selectedAvatar,
   setSelectedAvatar,
-  dateJoined,
 }) {
   const [showAvatars, setShowAvatars] = useState(false);
   const [changedAvatarMessage, setChangedAvatarMessage] = useState(false);
@@ -409,8 +409,8 @@ function PlayerCasesSolved({ levels, solvedCasesContainer }) {
       <div className="cases-solved-title">— CASES SOLVED —</div>
       <div className="amount-cases">
         {levels.map((level, i) => {
-          const solvedCases = solvedCasesContainer[i].length;
           const availableCases = level.length;
+          const solvedCases = solvedCasesContainer[i].length;
           //level = easy,medium,hard array of objects
           return (
             <div className="cases-solved" key={i}>
@@ -423,6 +423,7 @@ function PlayerCasesSolved({ levels, solvedCasesContainer }) {
                   {solvedCases} / {availableCases}
                 </div>
               </div>
+
               <div
                 className="solved-bar"
                 style={{
